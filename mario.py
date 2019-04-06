@@ -16,6 +16,8 @@ class Mario(object):
         self.vel = 5
         self.isJump = False
         self.jumpCount = 10
+
+
      #   self.acc = Vector2(0, 0)
      #   self.vel = Vector2(0,0)
 

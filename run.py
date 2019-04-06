@@ -27,6 +27,7 @@ class Game(object):
         self.mario = Mario(self)
 
 
+
         while True:
             # Handle events
             for event in pygame.event.get():

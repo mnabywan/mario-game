@@ -1,5 +1,6 @@
 import pygame, sys
 from mario import Mario
+from brick import Brick
 
 
 class Game(object):
@@ -25,7 +26,7 @@ class Game(object):
         self.tps_delta = 0.0
 
         self.mario = Mario(self)
-
+        self.brick1 = Brick(self, 120, 140)
 
 
         while True:
@@ -51,6 +52,8 @@ class Game(object):
 
     def draw(self):
         self.mario.draw()
+        if self.brick1.is_visible:
+            self.brick1.draw()
         
 
 

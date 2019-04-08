@@ -21,7 +21,8 @@ class Game(object):
         self.screen_height = 601
         self.screen_width = 1641
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-        self.bg = pygame.image.load('/home/mateusz/PycharmProjects/Mario/graphics/bg.jpg')
+        self.bg = pygame.image.load('C:/Users/Veronika/Desktop/Informatyka/mario.png')
+        #self.bg = pygame.image.load('/home/mateusz/PycharmProjects/Mario/graphics/bg.jpg')
         self.tps_clock = pygame.time.Clock()
         self.tps_delta = 0.0
 

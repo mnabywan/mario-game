@@ -12,6 +12,8 @@ class Game(object):
         pygame.display.flip()
 
 
+
+
     def __init__(self):
         # cONFIG
         self.tps_max = 70.0

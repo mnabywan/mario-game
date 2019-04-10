@@ -14,7 +14,7 @@ class Level1:
         self.level_width = 6784
         self.level_heigth = self.screen_height
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-        self.bg = pygame.image.load('C:/Users/Veronika/Desktop/Informatyka/Sem 4/Python/MarioTest/graphics/level_1.png')
+        self.bg = pygame.image.load('/home/mateusz/Documents/MarioGame/assets/level_1.png')
         self.bg = pygame.transform.scale(self.bg, (self.level_width, self.level_heigth))
         self.setup_background_elements()
 
@@ -32,7 +32,7 @@ class Level1:
 
 
     def read_map(self):
-        f = open('C:/Users/Veronika/Desktop/Informatyka/Sem 4/Python/MarioTest/graphics/map.txt')
+        f = open('/home/mateusz/Documents/MarioGame/assets/map.txt')
         self.map = f.readlines()
         for i in range(0, 14, 1):
             self.map[i] = self.map[i].split()

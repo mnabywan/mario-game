@@ -13,4 +13,4 @@ class Brick(object):
 
     def draw(self):
         rect =  pygame.Rect(self.x,self.y, self.width, self.height)
-        pygame.draw.rect(self.game.screen, (0,0,0),rect)
+        pygame.draw.rect(self.game.level.screen, (0,0,0),rect)

@@ -28,8 +28,8 @@ class Game(object):
         self.tps_delta = 0.0
 
         self.mario = Mario(self)
-        self.brick1 = Brick(self, 300,self.screen_height - 50 - self.mario.ground_level)
-        self.brick2 = Brick(self, 200,self.screen_height -50 - self.mario.ground_level)
+        self.brick1 = Brick(self, 120, 140)
+
 
         while True:
             # Handle events
@@ -56,7 +56,6 @@ class Game(object):
         self.mario.draw()
         if self.brick1.is_visible:
             self.brick1.draw()
-            self.brick2.draw()
         
 
 

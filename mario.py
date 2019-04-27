@@ -1,4 +1,5 @@
 import pygame
+import constants as c
 from pygame.math import Vector2
 
 
@@ -6,10 +7,10 @@ class Mario(pygame.sprite.Sprite):
     def __init__(self, game):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
-        self.width = 32
-        self.height = 64
+        self.width = c.MARIO_WIDTH
+        self.height = c.MARIO_HEIGHT
         self.image = pygame.Surface((self.width, self.height))
-        self.image.fill((0, 255, 0))
+        self.image.fill(c.RED)
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = game.screen_height - self.height - 50
@@ -21,7 +22,7 @@ class Mario(pygame.sprite.Sprite):
     def setup_movement(self):
         self.coordinate_x = self.rect.x
         self.coordinate_y = self.rect.y  # zawsze, wiec jest niepotrzebna
-        self.speed = 10
+        self.speed = 5
         self.vel = [0, 0]
         self.isJump = False
         self.jumpCount = 10
@@ -52,9 +53,9 @@ class Mario(pygame.sprite.Sprite):
             #    self.y -= self.vel
             #    #self.add_force(Vector2(0,-self.speed))
 
-            if pressed[pygame.K_DOWN] and self.y < self.game.screen_height - self.height - self.vel[1]:
-                self.vel[1] += self.speed
-                self.y += self.vel[1]
+            #if pressed[pygame.K_DOWN] and self.y < self.game.screen_height - self.height - self.vel[1]:
+            #    self.vel[1] += self.speed
+            #    self.y += self.vel[1]
             #     self.add_force(Vector2(0,self.speed))
 
             if pressed[pygame.K_UP]:
@@ -72,6 +73,7 @@ class Mario(pygame.sprite.Sprite):
                 self.isJump = False
                 self.jumpCount = 10
         # self.y += 5
+
         print(self.coordinate_x)
         print(self.rect.y)
 

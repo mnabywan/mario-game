@@ -1,29 +1,28 @@
 import pygame, sys
+import constants as c
 from mario import Mario
 from brick import Brick
 from level1 import Level1
 from Sprite import Map
 
 
+
 class Game(object):
 
     def redraw(self):
-
-        self.level.screen.fill((0, 0, 0))
+        self.level.screen.fill(c.BLACK)
         self.draw()
         pygame.display.flip()
 
     def __init__(self):
-        # cONFIG
-        self.tps_max = 70.0
+        # Config tps
+        self.tps_max = c.TPS_MAX
 
         # init
         pygame.init()
+        self.screen_height = c.SCREEN_HEIGHT
+        self.screen_width = c.SCREEN_WIDTH
 
-        # self.screen_height = 601
-        # self.screen_width = 1641
-        self.screen_height = 464
-        self.screen_width = 640
         self.mario = Mario(self)
         self.level = Level1(self, self.screen_width, self.screen_height)
 
@@ -31,7 +30,7 @@ class Game(object):
         self.tps_clock = pygame.time.Clock()
         self.tps_delta = 0.0
 
-        self.brick1 = Brick(self, 120, 140)
+        #self.brick1 = Brick(self, 120, 140)
 
         while True:
             # Handle events
@@ -56,8 +55,7 @@ class Game(object):
     def draw(self):
         self.level.draw_background()
         self.mario.draw()
-        if self.brick1.is_visible:
-            self.brick1.draw()
+
 
 
 if __name__ == "__main__":

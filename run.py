@@ -19,14 +19,14 @@ class Game(object):
         self.tps_max = c.TPS_MAX
 
         # init
-        pygame.init()
+        #pygame.init()
         self.screen_height = c.SCREEN_HEIGHT
         self.screen_width = c.SCREEN_WIDTH
 
         self.mario = Mario(self)
         self.level = Level1(self, self.screen_width, self.screen_height)
 
-        # self.bg = pygame.image.load('/home/mateusz/PycharmProjects/Mario/graphics/bg.jpg')
+        #self.bg = pygame.image.load('/home/mateusz/PycharmProjects/Mario/graphics/bg.jpg')
         self.tps_clock = pygame.time.Clock()
         self.tps_delta = 0.0
 

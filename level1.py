@@ -61,7 +61,7 @@ class Level1:
                 self.mario.rect.left = bg_elem.rect.right
                 #self.mario.can_move_left = False
 
-            self.mario.vel = 0
+            #self.mario.vel = 0
             #self.mario.coordinate_x -= self.mario.vel[0]
 
 

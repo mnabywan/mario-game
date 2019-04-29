@@ -19,7 +19,7 @@ class Game(object):
         self.tps_max = c.TPS_MAX
 
         # init
-        #pygame.init()
+        pygame.init()
         self.screen_height = c.SCREEN_HEIGHT
         self.screen_width = c.SCREEN_WIDTH
 

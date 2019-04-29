@@ -1,4 +1,5 @@
 import pygame
+from mario import Mario
 import constants as c
 from Sprite import *
 
@@ -6,8 +7,10 @@ from Sprite import *
 class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
-        self.mario = game.mario
+        self.setup_mario()
         self.init_background(self.mario, width, heigth)
+
+
 
     def init_background(self, mario, width, heigth):
         self.screen_height = heigth
@@ -19,8 +22,6 @@ class Level1:
         self.bg = pygame.image.load('/home/mateusz/Documents/MarioGame/assets/level_1.png')
         self.bg = pygame.transform.scale(self.bg, (self.level_width, self.level_heigth))
         self.setup_background_elements()
-
-
 
     def draw_background(self):
         self.delta_x = -self.bg_pos[0]
@@ -48,6 +49,9 @@ class Level1:
                 if self.map[i][j] != "0":
                     element = Map(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.MULTIPLICATION, c.MULTIPLICATION)
                     self.bg_elem_group.add(element)
+
+    def setup_mario(self):
+        self.mario = Mario
 
 
     def check_mario_collisions_x(self):

@@ -1,6 +1,7 @@
 from Data.level1 import Level1
 from Data import constants as c
-import pygame
+import pygame,sys,os
+import Data.tools
 
 class Game(object):
     def redraw(self):
@@ -11,7 +12,7 @@ class Game(object):
     def __init__(self):
         # Config tps
         self.tps_max = c.TPS_MAX
-
+        self.GFX = Data.tools.load_all_gfx(os.path.join("graphics"))
         # init
         pygame.init()
         self.screen_height = c.SCREEN_HEIGHT

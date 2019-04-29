@@ -1,7 +1,5 @@
 import pygame
-import constants as c
-import setup
-from pygame.math import Vector2
+from Data import setup, constants as c
 
 
 class Mario(pygame.sprite.Sprite):
@@ -11,10 +9,10 @@ class Mario(pygame.sprite.Sprite):
 
         self.game = game
 
-        self.setup_timers() #TO DO
-        self.setup_states() #TO DO
+        #self.setup_timers() #TO DO
+        #self.setup_states() #TO DO
         self.setup_movement()  #TO DO
-        self.setup_counters()  #TO DO
+        #self.setup_counters()  #TO DO
         self.load_images_from_sheet()
 
 

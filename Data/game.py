@@ -1,14 +1,8 @@
-import pygame, sys
-import constants as c
-from mario import Mario
-from brick import Brick
-from level1 import Level1
-from collider import Map
-
-
+from Data.level1 import Level1
+from Data import constants as c
+import pygame
 
 class Game(object):
-
     def redraw(self):
         self.level.screen.fill(c.BLACK)
         self.draw()
@@ -23,14 +17,11 @@ class Game(object):
         self.screen_height = c.SCREEN_HEIGHT
         self.screen_width = c.SCREEN_WIDTH
 
-        self.mario = Mario(self)
         self.level = Level1(self, self.screen_width, self.screen_height)
 
-        #self.bg = pygame.image.load('/home/mateusz/PycharmProjects/Mario/graphics/bg.jpg')
         self.tps_clock = pygame.time.Clock()
         self.tps_delta = 0.0
 
-        #self.brick1 = Brick(self, 120, 140)
 
         while True:
             # Handle events
@@ -60,3 +51,4 @@ class Game(object):
 
 if __name__ == "__main__":
     Game()
+

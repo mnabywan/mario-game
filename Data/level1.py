@@ -1,16 +1,12 @@
-import pygame
-from mario import Mario
-import constants as c
-from collider import *
-
+from Data import constants as c
+from Data.collider import *
+from Data.mario import Mario
 
 class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
-        self.setup_mario()
+        self.mario = Mario
         self.init_background(self.mario, width, heigth)
-
-
 
     def init_background(self, mario, width, heigth):
         self.screen_height = heigth
@@ -50,8 +46,6 @@ class Level1:
                     element = Collider(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.MULTIPLICATION, c.MULTIPLICATION)
                     self.bg_elem_group.add(element)
 
-    def setup_mario(self):
-        self.mario = Mario
 
 
     def check_mario_collisions_x(self):

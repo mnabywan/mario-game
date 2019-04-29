@@ -1,7 +1,7 @@
 import pygame
 from mario import Mario
 import constants as c
-from Sprite import *
+from collider import *
 
 
 class Level1:
@@ -47,7 +47,7 @@ class Level1:
         for i in range(0, c.HEIGHT_ELEMENTS, 1):
             for j in range(0, c.WIDTH_ELEMENTS, 1):
                 if self.map[i][j] != "0":
-                    element = Map(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.MULTIPLICATION, c.MULTIPLICATION)
+                    element = Collider(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.MULTIPLICATION, c.MULTIPLICATION)
                     self.bg_elem_group.add(element)
 
     def setup_mario(self):

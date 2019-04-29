@@ -1,7 +1,7 @@
 import pygame
 
 
-class Map(pygame.sprite.Sprite):
+class Collider(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((width, height))

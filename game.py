@@ -3,7 +3,7 @@ import constants as c
 from mario import Mario
 from brick import Brick
 from level1 import Level1
-from Sprite import Map
+from collider import Map
 
 
 

@@ -1,6 +1,6 @@
 from Data.level1 import Level1
 from Data import constants as c
-import pygame,sys,os
+import pygame, sys, os
 import Data.tools
 
 class Game(object):
@@ -12,12 +12,12 @@ class Game(object):
     def __init__(self):
         # Config tps
         self.tps_max = c.TPS_MAX
-        self.GFX = Data.tools.load_all_gfx(os.path.join("graphics"))
+
         # init
         pygame.init()
         self.screen_height = c.SCREEN_HEIGHT
         self.screen_width = c.SCREEN_WIDTH
-
+        self.screen = pygame.display.set_mode((self.screen_height, self.screen_width))
         self.level = Level1(self, self.screen_width, self.screen_height)
 
         self.tps_clock = pygame.time.Clock()
@@ -47,6 +47,20 @@ class Game(object):
     def draw(self):
         self.level.draw_background()
         self.mario.draw()
+
+    def load_all_gfx(directory, colorkey=(255, 0, 255), accept=('.png', 'jpg', 'bmp')):
+        graphics = {}
+        for pic in os.listdir(directory):
+            name, ext = os.path.splitext(pic)
+            if ext.lower() in accept:
+                img = pygame.image.load(os.path.join(directory, pic))
+                if img.get_alpha():
+                    img = img.convert_alpha()
+                else:
+                    img = img.convert()
+                    img.set_colorkey(colorkey)
+                graphics[name] = img
+        return graphics
 
 
 

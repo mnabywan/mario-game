@@ -6,20 +6,28 @@ class Mario(pygame.sprite.Sprite):
     def __init__(self, game):
         pygame.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['mario_bros']
-
         self.game = game
 
         #self.setup_timers() #TO DO
         #self.setup_states() #TO DO
-        self.setup_movement()  #TO DO
-        #self.setup_counters()  #TO DO
+        #self.setup_movement()  #TO DO
         self.load_images_from_sheet()
+        #self.setup_counters()  #TO DO
+        self.coordinate_x = self.rect.x
+        self.coordinate_y = self.rect.y  # zawsze, wiec jest niepotrzebna
+        self.speed = 5
+        self.vel = [0, 0]
+        self.isJump = False
+        self.jumpCount = 10
+        self.inthemiddle = False
+
+
 
 
         self.state = c.WALK
         self.image = self.right_frames[self.frame_index]
         self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
+        #self.mask = pygame.mask.from_surface(self.image)
 
 
         self.key_timer = 0
@@ -36,14 +44,7 @@ class Mario(pygame.sprite.Sprite):
         #self.setup_movement()
         #self.y = game.screen_height - self.height - 50
 
-    def setup_movement(self):
-        self.coordinate_x = self.rect.x
-        self.coordinate_y = self.rect.y  # zawsze, wiec jest niepotrzebna
-        self.speed = 5
-        self.vel = [0, 0]
-        self.isJump = False
-        self.jumpCount = 10
-        self.inthemiddle = False
+    #def setup_movement(self):
 
     def move(self):
         pressed = pygame.key.get_pressed()

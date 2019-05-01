@@ -12,6 +12,14 @@ class Mario(pygame.sprite.Sprite):
         #self.setup_states() #TO DO
         #self.setup_movement()  #TO DO
         self.load_images_from_sheet()
+
+
+        self.state = c.WALK
+        self.image = self.right_small_frames[0]
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+
+
         #self.setup_counters()  #TO DO
         self.coordinate_x = self.rect.x
         self.coordinate_y = self.rect.y  # zawsze, wiec jest niepotrzebna
@@ -24,10 +32,6 @@ class Mario(pygame.sprite.Sprite):
 
 
 
-        self.state = c.WALK
-        self.image = self.right_frames[self.frame_index]
-        self.rect = self.image.get_rect()
-        #self.mask = pygame.mask.from_surface(self.image)
 
 
         self.key_timer = 0
@@ -37,12 +41,14 @@ class Mario(pygame.sprite.Sprite):
         #self.image = pygame.Surface((self.width, self.height))
         #self.image.fill(c.RED)
         #self.rect = self.image.get_rect()
-        #self.rect.x = 0
-        #self.rect.y = game.screen_height - self.height - 50
-        #self.mario_group = pygame.sprite.Group()
-        #self.mario_group.add(self)
+        self.rect.x = 0
+        self.rect.y = game.screen_height - 50
+        self.mario_group = pygame.sprite.Group()
+        self.mario_group.add(self)
+        self.width = 12
+        self.height = 16
         #self.setup_movement()
-        #self.y = game.screen_height - self.height - 50
+        self.y = game.screen_height - self.height - 50
 
     #def setup_movement(self):
 
@@ -98,7 +104,7 @@ class Mario(pygame.sprite.Sprite):
     def draw(self):
         # self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         # pygame.draw.rect(self.game.level.screen, (255, 0, 0), self.rect)
-        self.rect.y = self.y
+        #self.rect.y = self.y
         self.mario_group.draw(self.game.level.screen)
 
     def load_images_from_sheet(self):
@@ -167,8 +173,8 @@ class Mario(pygame.sprite.Sprite):
         image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
         image.set_colorkey(c.BLACK)
         image = pygame.transform.scale(image,
-                                   (int(rect.width*c.SIZE_MULTIPLIER),
-                                    int(rect.height*c.SIZE_MULTIPLIER)))
+                                   (int(rect.width*c.MARIO_SIZE_MULTIPLIER),
+                                    int(rect.height*c.MARIO_SIZE_MULTIPLIER)))
         return image
 
 

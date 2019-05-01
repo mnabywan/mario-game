@@ -5,8 +5,13 @@ from Data.mario import Mario
 class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
-        self.mario = Mario
+
+        self.mario = Mario(self.game)
+        self.mario.rect.x = 110
+        self.mario.rect.bottom = c.GROUND_HEIGHT
+
         self.init_background(self.mario, width, heigth)
+
 
     def init_background(self, mario, width, heigth):
         self.screen_height = heigth
@@ -18,6 +23,7 @@ class Level1:
         self.bg = pygame.image.load('/home/mateusz/Documents/MarioGame/assets/level_1.png')
         self.bg = pygame.transform.scale(self.bg, (self.level_width, self.level_heigth))
         self.setup_background_elements()
+
 
     def draw_background(self):
         self.delta_x = -self.bg_pos[0]

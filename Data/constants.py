@@ -3,7 +3,7 @@
 SCREEN_HEIGHT = 464
 SCREEN_WIDTH = 1000
 SCREEN_SIZE = (SCREEN_WIDTH,SCREEN_HEIGHT)
-GROUND_HEIGHT = SCREEN_HEIGHT - 62  #???
+GROUND_HEIGHT = SCREEN_HEIGHT - 50  #???
 
 #colours (red, green,  blue)
 BLACK = (0,0,0)
@@ -30,6 +30,7 @@ MARIO_SIZE_MULTIPLIER = 2.5
 STAND = 'stand'
 WALK = 'walk'
 JUMP = 'jump'
+FALL = 'fall'
 SHOOT = 'shoot'
 SMALL_TO_BIG = 'small to big'
 BIG_TO_FIRE = 'big to fire'

@@ -14,12 +14,11 @@ class Mario(pygame.sprite.Sprite):
         self.setup_movement()
         self.load_images_from_sheet()
 
-        self.state = c.WALK
+        self.state = c.STAND
         self.image = self.right_small_frames[0]
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
 
-        #self.setup_counters()  #TO DO
         self.coordinate_x = self.rect.x
         self.coordinate_y = self.rect.y  # zawsze, wiec jest niepotrzebna
 
@@ -28,18 +27,114 @@ class Mario(pygame.sprite.Sprite):
 
         self.key_timer = 0
 
-
-
         self.rect.x = 0
         self.rect.y = game.screen_height - c.GROUND_HEIGHT
         self.mario_group = pygame.sprite.Group()
         self.mario_group.add(self)
         self.width = 12
         self.height = 16
-        #self.setup_movement()
+
         self.y = game.screen_height - c.GROUND_HEIGHT
 
-    #def setup_movement(self):
+    def standing(self):
+        pressed = pygame.key.get_pressed()
+        self.frame_index = 0
+        self.vel = [0,0]
+
+        if pressed[pygame.K_RIGHT]:
+            self.facing_right = True
+            self.state = c.WALK
+        elif pressed[pygame.K_LEFT]:
+            self.facing_right = False
+            self.state = c.WALK
+        elif pressed[pygame.K_UP]:
+            self.state = c.JUMP
+            self.vel[1] = c.JUMP_VEL
+        else:
+            self.state = c.STAND
+
+        #self.image = self.right_big_frames[self.frame_index]
+
+    def walking(self):
+        if self.frame_index < 3:
+            self.frame_index = 0
+        else:
+            self.frame_index = 0
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.width - self.vel[0]:
+
+            self.vel[0] = self.speed
+            self.coordinate_x += self.vel[0]
+            self.in_the_middle = True
+            if self.coordinate_x >= self.game.level.level_width - self.game.screen_width * 0.5 or self.rect.x < self.game.screen_width * 0.5 - \
+                    self.vel[0]:
+                self.rect.x += self.vel[0]
+                self.in_the_middle = False
+        if pressed[pygame.K_LEFT] and self.rect.x > self.vel[0]:
+            self.vel = [-self.speed, 0]
+            self.in_the_middle = False
+            self.rect.x += self.vel[0]
+            self.coordinate_x += self.vel[0]
+
+        if(pressed[pygame.K_UP]):
+            self.state = c.JUMP
+
+        elif (not pressed[pygame.K_UP]) or (not pressed[pygame.K_LEFT]) or (not pressed[pygame.K_RIGHT]):
+            self.state = c.STAND
+
+        if(self.is_big):
+            self.image = self.right_big_frames[self.frame_index]
+        else:
+            self.image = self.right_small_frames[self.frame_index]
+
+    def jumping(self):
+        pressed = pygame.key.get_pressed()
+        self.frame_index = 4
+        self.gravity = c.JUMP_GRAVITY
+        self.vel[1] += self.gravity
+
+        if self.vel[1] >= 0 and self.vel[1] < self.max_y_vel:
+           self.gravity = c.GRAVITY
+           self.state = c.FALL
+
+        if pressed[pygame.K_LEFT]:
+           self.vel[0] -= self.speed
+
+        elif pressed[pygame.K_RIGHT]:
+           self.vel[0] += self.speed
+
+        if not pressed[pygame.K_UP]:
+           self.gravity = c.GRAVITY
+           self.state = c.FALL
+
+
+        self.image = self.right_small_frames[self.frame_index]
+        self.rect.x += self.vel[0]
+        # self.rect.x += self.vel[0]
+        self.coordinate_x += self.vel[0]
+        self.rect.y += self.vel[1]
+
+    def falling(self):
+        pressed = pygame.key.get_pressed()
+        self.vel[1] += self.gravity
+
+        if self.vel[1] < c.MAX_Y_VEL:
+            self.vel[1] += self.gravity
+
+        if pressed[pygame.K_LEFT]:
+            self.vel[0] -= self.speed
+
+        elif pressed[pygame.K_RIGHT]:
+            self.vel[0] += self.speed
+
+        self.rect.x += self.vel[0]
+        self.rect.y += self.vel[1]
+
+        #if pressed[pygame.K_LEFT]:
+         #   self.vel[0] -= self.speed
+
+        #elif pressed[pygame.K_RIGHT]:
+         #   self.vel[0] += self.speed
 
     def move(self):
         pressed = pygame.key.get_pressed()
@@ -61,7 +156,7 @@ class Mario(pygame.sprite.Sprite):
             self.coordinate_x += self.vel[0]
 
         if not (self.is_jump):
-            if pressed[pygame.K_x]:
+            if pressed[pygame.K_UP]:
                 self.is_jump = True
 
         else:
@@ -158,11 +253,10 @@ class Mario(pygame.sprite.Sprite):
         self.vel = [0, 0]
         self.speed = 5
         self.gravity = c.GRAVITY
-
+        self.max_y_vel = c.MAX_Y_VEL
 
     def setup_counters(self):
         self.frame_index = 0   #informs which frame we show on screen
-
 
     def setup_timers(self):
         self.walking_timer = 0
@@ -170,17 +264,20 @@ class Mario(pygame.sprite.Sprite):
     def setup_states(self):
         'sets up states to affect to mario behaviour'
         self.facing_right = True
+        self.is_big = False
         self.in_the_middle = False
         self.allow_jump = True
         self.dead = False
         self.fire = False
 
-    def update(self, keys, game_info, fire_group):
-        """Updates Mario's states and animations once per frame"""
-        #self.current_time = game_info[c.CURRENT_TIME]
-        self.handle_state(keys, fire_group)
-        self.check_for_special_state()
-        self.animation()
-
-
+    def handle_state(self):
+        """Determines Mario's behavior based on his state"""
+        if self.state == c.STAND:
+            self.standing()
+        elif self.state == c.WALK:
+            self.walking()
+        elif self.state == c.JUMP:
+            self.jumping()
+        elif self.state == c.FALL:
+            self.falling()
 

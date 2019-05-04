@@ -9,13 +9,17 @@ from . import setup
 class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
-
         self.mario = Mario(self.game)
-        self.mario.rect.x = 200
+        self.mario.rect.x = 20
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
         self.init_background(self.mario, width, heigth)
 
+    def move_mario(self):
+        return self.mario.handle_state()
+
+    def draw_mario(self):
+        return self.mario.draw()
 
     def init_background(self, mario, width, heigth):
         self.screen_height = heigth
@@ -59,14 +63,10 @@ class Level1:
         if bg_elem:
             if self.mario.rect.x < bg_elem.rect.x:
                 self.mario.rect.right = bg_elem.rect.left
-                #self.mario.can_move_right = False
-
-            else:# self.mario.rect.x < bg_elem.rect.right:
+            else:
                 self.mario.rect.left = bg_elem.rect.right
-                #self.mario.can_move_left = False
 
             self.mario.vel[0] = 0
-            #self.mario.coordinate_x -= self.mario.vel[0]
 
 
     def check_mario_collisions_y(self):

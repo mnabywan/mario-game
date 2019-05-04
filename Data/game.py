@@ -18,12 +18,10 @@ class Game(object):
         self.screen_height = c.SCREEN_HEIGHT
         self.screen_width = c.SCREEN_WIDTH
         self.screen = pygame.display.get_surface()
-        #self.screen = pygame.display.set_mode((self.screen_height, self.screen_width))
         self.level = Level1(self, self.screen_width, self.screen_height)
 
         self.tps_clock = pygame.time.Clock()
         self.tps_delta = 0.0
-
 
         while True:
             # Handle events
@@ -43,11 +41,19 @@ class Game(object):
             self.redraw()
 
     def tick(self):
-        self.level.mario.move()
+        #self.level.mario.move()
+        self.level.move_mario()
+        if(self.level.mario.state == c.STAND):
+            print("stand")
+        elif(self.level.mario.state == c.WALK):
+            print("walk")
+        elif(self.level.mario.state == c.JUMP):
+            print("jump")
 
     def draw(self):
         self.level.draw_background()
-        self.level.mario.draw()
+        self.level.draw_mario()
+
 
     def load_all_gfx(directory, colorkey=(255, 0, 255), accept=('.png', 'jpg', 'bmp')):
         graphics = {}

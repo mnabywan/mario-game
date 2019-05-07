@@ -7,6 +7,7 @@ class Mario(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['mario_bros']
         self.game = game
+        #self.x_acc = .15
 
         self.setup_timers()
         self.setup_states()
@@ -24,6 +25,8 @@ class Mario(pygame.sprite.Sprite):
 
         self.is_jump = False
         self.jump_count = 10
+
+
 
         self.key_timer = 0
 
@@ -53,13 +56,13 @@ class Mario(pygame.sprite.Sprite):
         else:
             self.state = c.STAND
 
-        #self.image = self.right_big_frames[self.frame_index]
+        self.image = self.right_small_frames[self.frame_index]
 
     def walking(self):
         if self.frame_index < 3:
-            self.frame_index = 0
+            self.frame_index = 1
         else:
-            self.frame_index = 0
+            self.frame_index = 1
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.width - self.vel[0]:
 

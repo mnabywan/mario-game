@@ -49,6 +49,8 @@ class Game(object):
             print("walk")
         elif(self.level.mario.state == c.JUMP):
             print("jump")
+        elif(self.level.mario.state == c.FALL):
+            print("fall")
 
     def draw(self):
         self.level.draw_background()

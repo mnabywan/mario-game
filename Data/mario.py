@@ -7,7 +7,7 @@ class Mario(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['mario_bros']
         self.game = game
-        #self.x_acc = .15
+        self.x_acc = 0.15
 
         self.setup_timers()
         self.setup_states()
@@ -101,10 +101,10 @@ class Mario(pygame.sprite.Sprite):
            self.state = c.FALL
 
         if pressed[pygame.K_LEFT]:
-           self.vel[0] -= self.speed
+           self.vel[0] -= self.x_acc   #self.speed
 
         elif pressed[pygame.K_RIGHT]:
-           self.vel[0] += self.speed
+           self.vel[0] += self.x_acc   #self.speed
 
         if not pressed[pygame.K_UP]:
            self.gravity = c.GRAVITY
@@ -113,7 +113,7 @@ class Mario(pygame.sprite.Sprite):
 
         self.image = self.right_small_frames[self.frame_index]
         self.rect.x += self.vel[0]
-        # self.rect.x += self.vel[0]
+        #self.rect.x += self.vel[0]
         self.coordinate_x += self.vel[0]
         self.rect.y += self.vel[1]
 

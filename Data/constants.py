@@ -54,6 +54,9 @@ MAX_RUN_SPEED = 800
 MAX_WALK_SPEED = 6
 
 
+#brick
+BRICK_SIZE_MULTIPLIER = 2.69
+
 #enemy state
 LEFT = 'left'
 RIGHT = 'right'

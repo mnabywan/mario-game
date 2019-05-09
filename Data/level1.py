@@ -80,8 +80,6 @@ class Level1:
                     enemy = Enemy(c.MULTIPLICATION*j, c.MULTIPLICATION*i)
                     self.enemy_group.add(enemy)
 
-        brick1 = Brick(100, c.GROUND_HEIGHT - 42)
-        self.bricks_group.add(brick1)
         enemy1 = Enemy(200, c.GROUND_HEIGHT)
         enemy2 = Enemy(300, c.GROUND_HEIGHT)
         self.enemy_group.add(enemy1, enemy2)

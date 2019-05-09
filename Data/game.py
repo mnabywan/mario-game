@@ -56,6 +56,7 @@ class Game(object):
     def draw(self):
         self.level.draw_background()
         self.level.draw_mario()
+        self.level.draw_enemy()
 
     def load_all_gfx(directory, colorkey=(255, 0, 255), accept=('.png', 'jpg', 'bmp')):
         graphics = {}

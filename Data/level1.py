@@ -26,6 +26,9 @@ class Level1:
     def draw_mario(self):
         return self.mario.draw()
 
+    def draw_enemy(self):
+        return self.enemy.draw()
+
     def init_background(self, width, heigth):
         self.screen_height = heigth
         self.screen_width = width
@@ -47,7 +50,6 @@ class Level1:
         self.screen.blit(self.bg, self.bg_pos)
         self.bg_elem_group.draw(self.screen)
         self.bricks_group.draw(self.screen)
-        self.enemy_group.draw(self.screen)
         #self.screegn.blit(self.bg, self.bg_pos)
 
     def read_map(self):
@@ -73,7 +75,9 @@ class Level1:
                     self.bricks_group.add(brick)
 
 
-        self.enemy = Enemy(200, c.GROUND_HEIGHT)
+
+
+        self.enemy = Enemy(200, c.GROUND_HEIGHT,self.game)
         self.enemy_group.add(self.enemy)
 
 
@@ -121,6 +125,7 @@ class Level1:
         elif self.mario.rect.top > elements.rect.top:
             self.mario.rect.top = elements.rect.bottom
             self.mario.state = c.FALL
+
 
     def update_background_elements(self):
         for element in self.bg_elem_group:

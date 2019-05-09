@@ -21,13 +21,14 @@ class Level1:
         return self.mario.handle_state()
 
     def move_enemy(self):
-        return self.enemy.move()
+        for enemy in self.enemy_group:
+            enemy.move()
 
     def draw_mario(self):
         return self.mario.draw()
 
     def draw_enemy(self):
-        return self.enemy.draw()
+        return self.enemy_group.draw((self.screen))
 
     def init_background(self, width, heigth):
         self.screen_height = heigth
@@ -50,6 +51,7 @@ class Level1:
         self.screen.blit(self.bg, self.bg_pos)
         self.bg_elem_group.draw(self.screen)
         self.bricks_group.draw(self.screen)
+        self.enemy_group.draw(self.screen)
         #self.screegn.blit(self.bg, self.bg_pos)
 
     def read_map(self):
@@ -74,22 +76,28 @@ class Level1:
                     brick = Brick(c.MULTIPLICATION*j, c.MULTIPLICATION*i)
                     self.bricks_group.add(brick)
 
+                elif self.map[i][j] == "5":
+                    enemy = Enemy(c.MULTIPLICATION*j, c.MULTIPLICATION*i)
+                    self.enemy_group.add(enemy)
 
-
-
-        self.enemy = Enemy(200, c.GROUND_HEIGHT,self.game)
-        self.enemy_group.add(self.enemy)
-
+        brick1 = Brick(100, c.GROUND_HEIGHT - 42)
+        self.bricks_group.add(brick1)
+        enemy1 = Enemy(200, c.GROUND_HEIGHT)
+        enemy2 = Enemy(300, c.GROUND_HEIGHT)
+        self.enemy_group.add(enemy1, enemy2)
 
     def check_mario_collisions_x(self):
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
-        bricks = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
-        enemies = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
+        brick = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
+        enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
         if bg_elem :
             self.mario_collisions_x(bg_elem)
 
-        elif bricks:
-            self.mario_collisions_x(bricks)
+        elif brick:
+            self.mario_collisions_x(brick)
+
+        elif enemy:
+            self.mario_collisions_x(enemy)
 
 
 
@@ -105,25 +113,37 @@ class Level1:
 
     def check_mario_collisions_y(self):
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
-        bricks = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
+        brick = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
+        enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
 
         if bg_elem:
             self.mario_collisions_y(bg_elem)
 
-        elif bricks:
-            self.mario_collisions_y(bricks)
+        elif brick:
+            self.mario_collisions_y(brick)
 
+        elif enemy:
+            self.mario_enemy_collisions_y(enemy)
 
-                #self.mario.rect.bottom = bg_elem.rect.top
-
-    def mario_collisions_y(self, elements):
-        if elements.rect.bottom > self.mario.rect.bottom:
+    def mario_collisions_y(self, element):
+        if element.rect.bottom > self.mario.rect.bottom:
             self.mario.vel[1] = 0
-            self.mario.rect.bottom = elements.rect.top
+            self.mario.rect.bottom = element.rect.top
             self.mario.state = c.WALK
 
-        elif self.mario.rect.top > elements.rect.top:
-            self.mario.rect.top = elements.rect.bottom
+        elif self.mario.rect.top > element.rect.top:
+            self.mario.rect.top = element.rect.bottom
+            self.mario.state = c.FALL
+
+    def mario_enemy_collisions_y(self, enemy):
+        if enemy.rect.bottom > self.mario.rect.bottom:
+            self.mario.vel[1] = 0
+            self.mario.rect.bottom = enemy.rect.top
+            enemy.die()
+            self.mario.state = c.WALK
+
+        elif self.mario.rect.top > enemy.rect.top:
+            self.mario.rect.top = enemy.rect.bottom
             self.mario.state = c.FALL
 
 
@@ -133,6 +153,9 @@ class Level1:
 
         for brick in self.bricks_group:
             brick.rect.x += self.delta_x
+
+        for enemy in self.enemy_group:
+            enemy.rect.x += self.delta_x
 
         self.check_mario_collisions_y()
         self.check_mario_collisions_x()

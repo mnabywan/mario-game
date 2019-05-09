@@ -3,9 +3,9 @@ from . import constants as c
 from . import setup
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y, game):
+    def __init__(self, x, y):
         self.sprite_sheet = setup.GFX['enemies1']
-        self.game = game
+
         #self.x_acc = 0.15
 
         pygame.sprite.Sprite.__init__(self)
@@ -20,8 +20,6 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.bottom = y
 
-        self.enemy_group = pygame.sprite.Group()
-        self.enemy_group.add(self)
 
         self.mask = pygame.mask.from_surface(self.image)
         self.state = c.WALK
@@ -65,6 +63,8 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.x -= self.vel[0]
             print("W lewo")
         '''
+    def die(self):
+        self.frame_index = 3
 
     def draw(self):
         self.enemy_group.draw(self.game.level.screen)

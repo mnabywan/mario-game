@@ -23,11 +23,6 @@ class Mario(pygame.sprite.Sprite):
         self.coordinate_x = self.rect.x
         self.coordinate_y = self.rect.y  # zawsze, wiec jest niepotrzebna
 
-        self.is_jump = False
-        self.jump_count = 10
-
-
-
         self.key_timer = 0
 
         self.rect.x = 0
@@ -130,11 +125,12 @@ class Mario(pygame.sprite.Sprite):
         self.rect.y += self.vel[1]
 
     def falling(self):
-        if self.rect.y >= self.game.screen_height - self.height - 42:
-            self.rect.y = self.game.screen_height - self.height - 42
-            print("spadam")
-            self.state = c.STAND
-            return
+        self.check_for_death_jump()
+        #if self.rect.y >= self.game.screen_height - self.height - 42:
+        #    self.rect.y = self.game.screen_height - self.height - 42
+        #    print("spadam")
+        #    self.state = c.STAND
+        #    return
         pressed = pygame.key.get_pressed()
         self.vel[1] += self.gravity
 
@@ -174,47 +170,15 @@ class Mario(pygame.sprite.Sprite):
         # elif pressed[pygame.K_RIGHT]:
         #   self.vel[0] += self.speed
 
+    def check_for_death_jump(self):
+        if self.rect.y >= self.game.screen_height - self.height - 42:
+            self.rect.y = self.game.screen_height - self.height - 42
+            print("Death fall")
+            self.frame_index = 0
+            self.dead = True
 
 
-    def move(self):
-        pressed = pygame.key.get_pressed()
-        self.vel = [0, 0]
 
-        if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.width - self.vel[0]:
-
-            self.vel[0] = self.speed
-            self.coordinate_x += self.vel[0]
-            self.in_the_middle = True
-            if self.coordinate_x >= self.game.level.level_width - self.game.screen_width * 0.5 or self.rect.x < self.game.screen_width * 0.5 - \
-                    self.vel[0]:
-                self.rect.x += self.vel[0]
-                self.in_the_middle = False
-        if pressed[pygame.K_LEFT] and self.rect.x > self.vel[0]:
-            self.vel = [-self.speed, 0]
-            self.in_the_middle = False
-            self.rect.x += self.vel[0]
-            self.coordinate_x += self.vel[0]
-
-        if not (self.is_jump):
-            if pressed[pygame.K_UP]:
-                self.is_jump = True
-
-        else:
-            self.image = self.right_small_frames[5]
-            if self.jump_count >= -10:
-                neg = 1
-                if self.jump_count < 0:
-                    neg = -1
-                self.rect.y -= (self.jump_count ** 2) * 0.5 * neg
-                self.jump_count -= 1
-
-            else:
-                self.is_jump = False
-                self.image = self.right_small_frames[1]
-                self.jump_count = 10
-
-    #print(self.coordinate_x)
-    #print(self.rect.y)
 
     def draw(self):
         self.mario_group.draw(self.game.level.screen)

@@ -100,8 +100,7 @@ class Mario(pygame.sprite.Sprite):
             self.state = c.FALL
             self.state = c.FALL
 
-        if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.rect.width - self.vel[
-            0]:  # zmina z self.width na self.rect.widt
+        if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.rect.width - self.vel[0]:  # zmina z self.width na self.rect.widt
 
             self.vel[0] = self.speed
             # self.vel[0] += self.x_acc
@@ -133,8 +132,7 @@ class Mario(pygame.sprite.Sprite):
         pressed = pygame.key.get_pressed()
         self.vel[1] += self.gravity
 
-        if self.vel[0] > 0 and self.coordinate_x < self.game.level.level_width - self.rect.width - self.vel[
-            0]:  # zmiana z self.width na self.rect.width
+        if self.vel[0] > 0 and self.coordinate_x < self.game.level.level_width - self.rect.width - self.vel[0]:  # zmiana z self.width na self.rect.width
 
             self.vel[0] = self.speed
             self.coordinate_x += self.vel[0]

@@ -12,7 +12,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self.images = []
         self.load_images_from_sheet()
-        self.frame_index = 1
+        self.frame_index = 0
         self.direction = direction
         self.dead = False
 
@@ -20,7 +20,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.initial_vel()
         self.rect.x = x
-        self.rect.bottom = y
+        self.rect.y = y
 
 
 

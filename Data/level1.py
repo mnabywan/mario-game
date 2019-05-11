@@ -78,14 +78,14 @@ class Level1:
                     self.bricks_group.add(brick)
 
                 elif self.map[i][j] == "5":
-                    enemy = Enemy(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.LEFT)
+                    enemy = Enemy(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.RIGHT)
                     self.enemy_group.add(enemy)
 
-        enemy1 = Enemy(200, c.GROUND_HEIGHT, c.LEFT)
-        enemy2 = Enemy(300, c.GROUND_HEIGHT, c.RIGHT)
+        #enemy1 = Enemy(200, c.GROUND_HEIGHT, c.LEFT)
+        #enemy2 = Enemy(300, c.GROUND_HEIGHT, c.RIGHT)
         #enemy3 = Enemy(1200, c.GROUND_HEIGHT, c.RIGHT)
 
-        self.enemy_group.add(enemy1, enemy2)
+        #self.enemy_group.add(enemy1, enemy2)
 
     def check_mario_collisions_x(self):
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
@@ -157,7 +157,7 @@ class Level1:
 
     def check_enemy_x_collisions(self, enemy):
         bg_elem = pygame.sprite.spritecollideany(enemy, self.bg_elem_group)
-
+        enemy_collider = pygame.sprite.spritecollideany(enemy, self.enemy_group)
         if bg_elem:
             if enemy.direction == c.RIGHT:
                 enemy.rect.right = bg_elem.rect.left
@@ -169,7 +169,6 @@ class Level1:
                 enemy.direction = c.RIGHT
                 enemy.vel[0] = 2
                 print("HALO2")
-
 
     def update_background_elements(self):
         for element in self.bg_elem_group:

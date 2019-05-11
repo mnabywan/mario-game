@@ -22,7 +22,7 @@ MULTIPLICATION = 32
 
 
 #mario size
-MARIO_SIZE_MULTIPLIER = 2.5
+MARIO_SIZE_MULTIPLIER = 2
 #MARIO_HEIGHT = 64
 #MARIO_WIDTH = 32
 
@@ -57,7 +57,7 @@ MAX_WALK_SPEED = 6
 #brick
 BRICK_SIZE_MULTIPLIER = 2.69
 
-#enemy state
+#enemy
 LEFT = 'left'
 RIGHT = 'right'
 JUMPED_ON = 'jumped on'

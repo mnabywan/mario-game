@@ -6,14 +6,15 @@ from Data.enemy import Enemy
 import os
 from . import setup
 
-
+#na nastepnych zajeciach prezentacje mamy mieć że w miarę dziala albo ukryte niedorobki
+#za nastepne 2 tygodnie oddawanie do prowadzacego
+#12 min na pokazanie
 
 class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
         self.mario = Mario(self.game)
-        self.mario.rect.x = 20
-        self.mario.rect.bottom = c.GROUND_HEIGHT
+
 
         self.init_background(width, heigth)
 
@@ -28,7 +29,7 @@ class Level1:
         return self.mario.draw()
 
     def draw_enemy(self):
-        return self.enemy_group.draw((self.screen))
+        return self.enemy_group.draw(self.screen)
 
     def init_background(self, width, heigth):
         self.screen_height = heigth
@@ -80,22 +81,28 @@ class Level1:
                     enemy = Enemy(c.MULTIPLICATION*j, c.MULTIPLICATION*i)
                     self.enemy_group.add(enemy)
 
-        enemy1 = Enemy(200, c.GROUND_HEIGHT)
-        enemy2 = Enemy(300, c.GROUND_HEIGHT)
+        enemy1 = Enemy(200, c.GROUND_HEIGHT, c.LEFT)
+        enemy2 = Enemy(300, c.GROUND_HEIGHT, c.RIGHT)
         self.enemy_group.add(enemy1, enemy2)
 
     def check_mario_collisions_x(self):
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
         brick = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
         enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
-        if bg_elem :
+        if bg_elem:
             self.mario_collisions_x(bg_elem)
 
         elif brick:
             self.mario_collisions_x(brick)
 
         elif enemy:
-            self.mario_collisions_x(enemy)
+            self.mario_collisions_enemy_x(enemy)
+
+    def mario_collisions_enemy_x(self, enemy):
+        if self.mario.rect.x < enemy.rect.x or self.mario.rect.x+self.mario.rect.width < enemy.rect.x + enemy.rect.width:
+            self.mario.dead = True
+            print("Enemy killed mario")
+
 
 
 
@@ -132,6 +139,7 @@ class Level1:
         elif self.mario.rect.top > element.rect.top:
             self.mario.rect.top = element.rect.bottom
             self.mario.state = c.FALL
+            print( "aaaaaaaa")
 
     def mario_enemy_collisions_y(self, enemy):
         if enemy.rect.bottom > self.mario.rect.bottom:
@@ -145,6 +153,22 @@ class Level1:
             self.mario.state = c.FALL
 
 
+    def check_enemy_x_collisions(self, enemy):
+        bg_elem = pygame.sprite.spritecollideany(enemy, self.bg_elem_group)
+
+        if bg_elem:
+            if enemy.direction == c.RIGHT:
+                enemy.rect.right = bg_elem.rect.left
+                enemy.direction = c.LEFT
+                enemy.vel[0] = -2
+                print("HALO")
+            elif enemy.direction == c.LEFT:
+                enemy.rect.left = bg_elem.rect.right
+                enemy.direction = c.RIGHT
+                enemy.vel[0] = 2
+                print("HALO2")
+
+
     def update_background_elements(self):
         for element in self.bg_elem_group:
             element.rect.x += self.delta_x
@@ -153,8 +177,12 @@ class Level1:
             brick.rect.x += self.delta_x
 
         for enemy in self.enemy_group:
+            self.check_enemy_x_collisions(enemy)
             enemy.rect.x += self.delta_x
+
+
 
         self.check_mario_collisions_y()
         self.check_mario_collisions_x()
+
 

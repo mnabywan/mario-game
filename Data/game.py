@@ -3,6 +3,9 @@ from Data import constants as c
 import pygame, sys, os
 import Data.tools
 
+
+#najwazniejsze dodać zabijanie przeciwnikow + kolizje z otoczeniem
+
 class Game(object):
     def redraw(self):
         self.level.screen.fill(c.BLACK)
@@ -43,15 +46,15 @@ class Game(object):
     def tick(self):
         #self.level.mario.move()
         self.level.move_mario()
-        #self.level.move_enemy()
-        if(self.level.mario.state == c.STAND):
-            print("stand")
-        elif(self.level.mario.state == c.WALK):
-            print("walk")
-        elif(self.level.mario.state == c.JUMP):
-            print("jump")
-        elif(self.level.mario.state == c.FALL):
-            print("fall")
+        self.level.move_enemy()
+        #if(self.level.mario.state == c.STAND):
+        #    print("stand")
+        #elif(self.level.mario.state == c.WALK):
+        #    print("walk")
+        #elif(self.level.mario.state == c.JUMP):
+        #    print("jump")
+        #elif(self.level.mario.state == c.FALL):
+        #    print("fall")
 
     def draw(self):
         self.level.draw_background()

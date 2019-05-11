@@ -3,7 +3,7 @@ from . import constants as c
 from . import setup
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, direction):
         self.sprite_sheet = setup.GFX['enemies1']
 
         #self.x_acc = 0.15
@@ -13,6 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         self.images = []
         self.load_images_from_sheet()
         self.frame_index = 1
+        self.direction = direction
 
 
         self.image = self.images[self.frame_index]
@@ -22,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
         self.mask = pygame.mask.from_surface(self.image)
-        self.state = c.WALK
+        #self.state = c.WALK
 
 
 
@@ -44,27 +45,16 @@ class Enemy(pygame.sprite.Sprite):
                                     int(rect.height)*2))
         return image
 
-
     def move(self):
-        self.vel = [2,2]
-        self.move_right = True
+        if self.direction == c.LEFT:
+            self.vel = [-2,0]
+        else:
+            self.vel = [2,0]
 
-        '''
-        if self.rect.x == 800 and self.move_right == True:
-            self.move_right = False
-            self.rect.x -= self.vel[0]
-        elif self.rect.x < 20 and self.move_right == False:
-            self.move_right == True
-            self.rect.x += self.vel[0]
-        elif self.move_right :
-            self.rect.x += self.vel[0]
-            print("W prawo")
-        elif self.move_right == False :
-            self.rect.x -= self.vel[0]
-            print("W lewo")
-        '''
+        self.rect.x += self.vel[0]
+
     def die(self):
-        self.frame_index = 3
-
+        self.frame_index = 2
+        self.image = self.images[self.frame_index]
     def draw(self):
         self.enemy_group.draw(self.game.level.screen)

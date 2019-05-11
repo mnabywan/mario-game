@@ -26,11 +26,12 @@ class Mario(pygame.sprite.Sprite):
         self.key_timer = 0
 
         self.rect.x = 0
-        self.rect.y = game.screen_height - c.GROUND_HEIGHT
+        self.rect.bottom = c.GROUND_HEIGHT
+        print(self.rect.width)
+
         self.mario_group = pygame.sprite.Group()
         self.mario_group.add(self)
-        self.width = 12
-        self.height = 16
+
 
         self.y = game.screen_height - c.GROUND_HEIGHT
 
@@ -51,7 +52,7 @@ class Mario(pygame.sprite.Sprite):
         else:
             self.state = c.STAND
 
-        self.image = self.right_small_frames[self.frame_index]
+        # self.image = self.right_big_frames[self.frame_index]
 
     def walking(self):
         self.vel[1] = c.JUMP_VEL
@@ -60,7 +61,7 @@ class Mario(pygame.sprite.Sprite):
         else:
             self.frame_index = 0
         pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.width - self.vel[0]:
+        if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.rect.width - self.vel[0]:
 
             self.vel[0] = self.speed
             self.coordinate_x += self.vel[0]
@@ -72,6 +73,7 @@ class Mario(pygame.sprite.Sprite):
         if pressed[pygame.K_LEFT] and self.rect.x > self.vel[0]:
             self.vel[0] = -self.speed
             self.in_the_middle = False
+            self.facing_right = False
             self.rect.x += self.vel[0]
             self.coordinate_x += self.vel[0]
 
@@ -81,10 +83,10 @@ class Mario(pygame.sprite.Sprite):
         elif (not pressed[pygame.K_UP]) or (not pressed[pygame.K_LEFT]) or (not pressed[pygame.K_RIGHT]):
             self.state = c.STAND
 
-        if (self.is_big):
-            self.image = self.right_big_frames[self.frame_index]
-        else:
-            self.image = self.right_small_frames[self.frame_index]
+        # if (self.is_big):
+        #    self.image = self.right_big_frames[self.frame_index]
+        # else:
+        #    self.image = self.right_big_frames[self.frame_index]
 
     def jumping(self):
         pressed = pygame.key.get_pressed()
@@ -94,10 +96,12 @@ class Mario(pygame.sprite.Sprite):
 
         self.state = c.FALL
         if self.vel[1] >= 0 and self.vel[1] < self.max_y_vel:
-            self.gravity = c.GRAVITY #bylo same gravity #ok
+            self.gravity = c.GRAVITY  # bylo same gravity #ok
+            self.state = c.FALL
             self.state = c.FALL
 
-        if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.width - self.vel[0]:
+        if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.rect.width - self.vel[
+            0]:  # zmina z self.width na self.rect.widt
 
             self.vel[0] = self.speed
             # self.vel[0] += self.x_acc
@@ -118,7 +122,7 @@ class Mario(pygame.sprite.Sprite):
             # self.gravity = c.GRAVITY
             self.state = c.JUMP
 
-        self.image = self.right_small_frames[self.frame_index]
+        #       self.image = self.right_big_frames[self.frame_index]
         # self.rect.x += self.vel[0]
         # self.rect.x += self.vel[0]
         # self.coordinate_x += self.vel[0]
@@ -126,17 +130,11 @@ class Mario(pygame.sprite.Sprite):
 
     def falling(self):
         self.check_for_death_jump()
-        #if self.rect.y >= self.game.screen_height - self.height - 42:
-        #    self.rect.y = self.game.screen_height - self.height - 42
-        #    print("spadam")
-        #    self.state = c.STAND
-        #    return
         pressed = pygame.key.get_pressed()
         self.vel[1] += self.gravity
 
-        # self.vel[0] -= self.x_acc
-
-        if self.vel[0] > 0 and self.coordinate_x < self.game.level.level_width - self.width - self.vel[0]:
+        if self.vel[0] > 0 and self.coordinate_x < self.game.level.level_width - self.rect.width - self.vel[
+            0]:  # zmiana z self.width na self.rect.width
 
             self.vel[0] = self.speed
             self.coordinate_x += self.vel[0]
@@ -171,14 +169,11 @@ class Mario(pygame.sprite.Sprite):
         #   self.vel[0] += self.speed
 
     def check_for_death_jump(self):
-        if self.rect.y >= self.game.screen_height - self.height - 42:
-            self.rect.y = self.game.screen_height - self.height - 42
+        if self.rect.y >= self.game.screen_height - self.rect.height - 10:
+            self.rect.y = self.game.screen_height - self.rect.height - 10
             print("Death fall")
             self.frame_index = 0
             self.dead = True
-
-
-
 
     def draw(self):
         self.mario_group.draw(self.game.level.screen)
@@ -197,11 +192,11 @@ class Mario(pygame.sprite.Sprite):
         self.right_small_frames.append(
             self.get_image(178, 32, 12, 16))  # Right [0]
         self.right_small_frames.append(
-            self.get_image(80,  32, 15, 16))  # Right walking 1 [1]
+            self.get_image(80, 32, 15, 16))  # Right walking 1 [1]
         self.right_small_frames.append(
-            self.get_image(96,  32, 16, 16))  # Right walking 2 [2]
+            self.get_image(96, 32, 16, 16))  # Right walking 2 [2]
         self.right_small_frames.append(
-            self.get_image(112,  32, 16, 16))  # Right walking 3 [3]
+            self.get_image(112, 32, 16, 16))  # Right walking 3 [3]
         self.right_small_frames.append(
             self.get_image(144, 32, 16, 16))  # Right jump [4]
         self.right_small_frames.append(
@@ -216,6 +211,10 @@ class Mario(pygame.sprite.Sprite):
             self.get_image(194, 32, 12, 16))  # Frame 1 of flag pole Slide [9]
         self.right_small_frames.append(
             self.get_image(210, 33, 12, 16))  # Frame 2 of flag pole slide [10]
+
+        for frame in self.right_small_frames:
+            new_frame = pygame.transform.flip(frame, True, False)
+            self.left_small_frames.append(new_frame)
 
 
         self.right_big_frames.append(
@@ -241,6 +240,11 @@ class Mario(pygame.sprite.Sprite):
         self.right_big_frames.append(
             self.get_image(209, 2, 16, 29))  # Frame 2 of flag pole slide [10]
 
+        for frame in self.right_big_frames:
+            new_frame = pygame.transform.flip(frame, True, False)
+            self.left_big_frames.append(new_frame)
+
+
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""
         image = pygame.Surface([width, height])
@@ -248,10 +252,9 @@ class Mario(pygame.sprite.Sprite):
         image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
         image.set_colorkey(c.BLACK)
         image = pygame.transform.scale(image,
-                                   (int(rect.width*c.MARIO_SIZE_MULTIPLIER),
-                                    int(rect.height*c.MARIO_SIZE_MULTIPLIER)))
+                                       (int(rect.width * c.MARIO_SIZE_MULTIPLIER),
+                                        int(rect.height * c.MARIO_SIZE_MULTIPLIER)))
         return image
-
 
     def setup_movement(self):
         self.vel = [0, 0]
@@ -260,7 +263,7 @@ class Mario(pygame.sprite.Sprite):
         self.max_y_vel = c.MAX_Y_VEL
 
     def setup_counters(self):
-        self.frame_index = 0   #informs which frame we show on screen
+        self.frame_index = 0  # informs which frame we show on screen
 
     def setup_timers(self):
         self.walking_timer = 0
@@ -284,4 +287,20 @@ class Mario(pygame.sprite.Sprite):
             self.jumping()
         elif self.state == c.FALL:
             self.falling()
+        self.actualise_image()
 
+
+    def actualise_image(self):
+        if not self.is_big:
+            if self.facing_right:
+                self.image = self.right_small_frames[self.frame_index]
+
+            else:
+                self.image = self.left_small_frames[self.frame_index]
+
+        else:
+            if self.facing_right:
+                self.image = self.right_big_frames[self.frame_index]
+
+            else:
+                self.image = self.left_big_frames[self.frame_index]

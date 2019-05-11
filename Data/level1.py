@@ -78,11 +78,13 @@ class Level1:
                     self.bricks_group.add(brick)
 
                 elif self.map[i][j] == "5":
-                    enemy = Enemy(c.MULTIPLICATION*j, c.MULTIPLICATION*i)
+                    enemy = Enemy(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.LEFT)
                     self.enemy_group.add(enemy)
 
         enemy1 = Enemy(200, c.GROUND_HEIGHT, c.LEFT)
         enemy2 = Enemy(300, c.GROUND_HEIGHT, c.RIGHT)
+        #enemy3 = Enemy(1200, c.GROUND_HEIGHT, c.RIGHT)
+
         self.enemy_group.add(enemy1, enemy2)
 
     def check_mario_collisions_x(self):

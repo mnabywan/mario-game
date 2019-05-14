@@ -14,8 +14,6 @@ class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
         self.mario = Mario(self.game)
-
-
         self.init_background(width, heigth)
 
     def move_mario(self):
@@ -81,6 +79,7 @@ class Level1:
                     enemy = Enemy(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.RIGHT)
                     self.enemy_group.add(enemy)
 
+
         #enemy1 = Enemy(200, c.GROUND_HEIGHT, c.LEFT)
         #enemy2 = Enemy(300, c.GROUND_HEIGHT, c.RIGHT)
         #enemy3 = Enemy(1200, c.GROUND_HEIGHT, c.RIGHT)
@@ -100,9 +99,17 @@ class Level1:
         elif enemy:
             self.mario_collisions_enemy_x(enemy)
 
+        self.mario_falling()
+
     def mario_collisions_enemy_x(self, enemy):
         if self.mario.rect.x < enemy.rect.x or self.mario.rect.x+self.mario.rect.width < enemy.rect.x + enemy.rect.width:
-            self.mario.dead = True
+            if not self.mario.is_big:
+                self.mario.dead = True
+            else:
+                self.mario.is_big = False
+                self.mario.rect.y -= 10
+                self.mario.state = c.FALL
+
             print("Enemy killed mario")
 
 
@@ -133,13 +140,15 @@ class Level1:
             self.mario_enemy_collisions_y(enemy)
 
     def mario_collisions_y(self, element):
-        if element.rect.bottom > self.mario.rect.bottom:
+        if element.rect.bottom > self.mario.rect.bottom  :
             self.mario.vel[1] = 0
             self.mario.rect.bottom = element.rect.top
-            self.mario.state = c.WALK
+            self.mario.state = c.WALK # zmien na fall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         elif self.mario.rect.top > element.rect.top:
             self.mario.rect.top = element.rect.bottom
+            element.rect.y += 400
+            #self.mario.is_big = True
             self.mario.state = c.FALL
             print( "aaaaaaaa")
 
@@ -148,7 +157,8 @@ class Level1:
             self.mario.vel[1] = 0
             self.mario.rect.bottom = enemy.rect.top
             enemy.die()
-            self.mario.state = c.WALK
+            self.mario.rect.y -= 50
+            self.mario.state = c.JUMP
 
         elif self.mario.rect.top > enemy.rect.top:
             self.mario.rect.top = enemy.rect.bottom
@@ -157,18 +167,18 @@ class Level1:
 
     def check_enemy_x_collisions(self, enemy):
         bg_elem = pygame.sprite.spritecollideany(enemy, self.bg_elem_group)
-        enemy_collider = pygame.sprite.spritecollideany(enemy, self.enemy_group)
+        #enemy_collider = pygame.sprite.spritecollideany(enemy, self.enemy_group)
         if bg_elem:
             if enemy.direction == c.RIGHT:
                 enemy.rect.right = bg_elem.rect.left
                 enemy.direction = c.LEFT
                 enemy.vel[0] = -2
-                print("HALO")
+                #print("HALO")
             elif enemy.direction == c.LEFT:
                 enemy.rect.left = bg_elem.rect.right
                 enemy.direction = c.RIGHT
                 enemy.vel[0] = 2
-                print("HALO2")
+                #print("HALO2")
 
     def update_background_elements(self):
         for element in self.bg_elem_group:
@@ -185,5 +195,28 @@ class Level1:
 
         self.check_mario_collisions_y()
         self.check_mario_collisions_x()
+
+
+    def check_mario_for_falling(self):
+        bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
+        brick = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
+        enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
+
+        if bg_elem is None and brick is None and enemy is None:
+            self.mario.state = c.FALL
+
+
+    def mario_falling(self):
+        self.mario.rect.y += 1
+        test_collide_group = pygame.sprite.Group(self.bg_elem_group,
+                                                 self.bricks_group, self.enemy_group)
+
+
+        if pygame.sprite.spritecollideany(self.mario, test_collide_group) is None:
+            if self.mario.state != c.JUMP:
+                self.mario.state = c.FALL
+
+
+        self.mario.rect.y -= 1
 
 

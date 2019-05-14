@@ -26,7 +26,7 @@ class Game(object):
         self.tps_clock = pygame.time.Clock()
         self.tps_delta = 0.0
 
-        while self.level.mario.dead == False:
+        while self.level.mario.alive():
             # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -47,14 +47,14 @@ class Game(object):
         #self.level.mario.move()
         self.level.move_mario()
         self.level.move_enemy()
-        #if(self.level.mario.state == c.STAND):
-        #    print("stand")
-        #elif(self.level.mario.state == c.WALK):
-        #    print("walk")
-        #elif(self.level.mario.state == c.JUMP):
-        #    print("jump")
-        #elif(self.level.mario.state == c.FALL):
-        #    print("fall")
+        if(self.level.mario.state == c.STAND):
+            print("stand")
+        elif(self.level.mario.state == c.WALK):
+            print("walk")
+        elif(self.level.mario.state == c.JUMP):
+            print("jump")
+        elif(self.level.mario.state == c.FALL):
+            print("fall")
 
     def draw(self):
         self.level.draw_background()

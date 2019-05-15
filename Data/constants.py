@@ -62,3 +62,8 @@ LEFT = 'left'
 RIGHT = 'right'
 JUMPED_ON = 'jumped on'
 DEATH_JUMP = 'death jump'
+
+
+#inside coin box
+COIN = 'coin'
+MUSHROOM = 'mushroom'

@@ -61,7 +61,7 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.x += self.vel[0]
 
         if self.dead:
-            self.rect.y +=100
+            self.kill()
 
     def die(self):
         self.frame_index = 2

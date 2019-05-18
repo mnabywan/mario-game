@@ -32,6 +32,7 @@ class Mario(pygame.sprite.Sprite):
 
         else:
             self.rect.bottom = c.MULTIPLICATION * 12
+
         print(self.rect.width)
 
         self.mario_group = pygame.sprite.Group()
@@ -87,6 +88,8 @@ class Mario(pygame.sprite.Sprite):
 
         elif (not pressed[pygame.K_UP]) or (not pressed[pygame.K_LEFT]) or (not pressed[pygame.K_RIGHT]):
             self.state = c.STAND
+
+        print(self.rect.bottom)
 
 
     def jumping(self):
@@ -243,6 +246,12 @@ class Mario(pygame.sprite.Sprite):
             new_frame = pygame.transform.flip(frame, True, False)
             self.left_big_frames.append(new_frame)
 
+    def alive(self):
+        if self.lives <= 0 or self.dead:
+            return False
+
+        else:
+            return True
 
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""
@@ -278,7 +287,6 @@ class Mario(pygame.sprite.Sprite):
 
     def handle_state(self):
         """Determines Mario's behavior based on his state"""
-        """Determines Mario's behavior based on his state"""
         if self.state == c.STAND:
             self.standing()
         elif self.state == c.WALK:
@@ -295,6 +303,7 @@ class Mario(pygame.sprite.Sprite):
             if self.facing_right:
                 self.image = self.right_small_frames[self.frame_index]
 
+
             else:
                 self.image = self.left_small_frames[self.frame_index]
 
@@ -304,3 +313,27 @@ class Mario(pygame.sprite.Sprite):
 
             else:
                 self.image = self.left_big_frames[self.frame_index]
+
+    def small_to_big(self,x,bottom):
+        self.is_big = True
+        self.actualise_image()
+        self.actualise_rect()
+        print(self.rect.x)
+        self.actualise_rect_position(x, bottom)
+
+
+
+    def big_to_small(self, x, bottom):
+        self.is_big = False
+        self.actualise_image()
+        self.actualise_rect()
+        self.actualise_rect_position(x, bottom)
+
+    def actualise_rect(self):
+        self.rect = self.image.get_rect()
+        #self.mask = pygame.mask.from_surface(self.image)
+
+
+    def actualise_rect_position(self, x, bottom):
+        self.rect.x = x
+        self.rect.bottom = bottom

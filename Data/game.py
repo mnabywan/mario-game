@@ -43,18 +43,29 @@ class Game(object):
             # Drawing
             self.redraw()
 
+        if not self.level.mario.alive():
+            input("Want to play one more time? Enter - yes, Escape - no")
+
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_KP_ENTER]:
+            print("Pressed")
+
+        elif pressed[pygame.K_ESCAPE]:
+            sys.exit(0)
+
+
     def tick(self):
         #self.level.mario.move()
         self.level.move_mario()
         self.level.move_enemy()
-        if(self.level.mario.state == c.STAND):
-            print("stand")
-        elif(self.level.mario.state == c.WALK):
-            print("walk")
-        elif(self.level.mario.state == c.JUMP):
-            print("jump")
-        elif(self.level.mario.state == c.FALL):
-            print("fall")
+        #if(self.level.mario.state == c.STAND):
+        #    print("stand")
+        #elif(self.level.mario.state == c.WALK):
+        #    print("walk")
+        #elif(self.level.mario.state == c.JUMP):
+        #    print("jump")
+        #elif(self.level.mario.state == c.FALL):
+        #    print("fall")
 
     def draw(self):
         self.level.draw_background()

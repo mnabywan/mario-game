@@ -114,18 +114,30 @@ class Level1:
         elif box:
             pass     #TODO
 
+        elif powerup:
+            self.mario_collisions_powerup_x(powerup)
+
         self.mario_falling()
 
     def mario_collisions_enemy_x(self, enemy):
         if self.mario.rect.x < enemy.rect.x or self.mario.rect.x+self.mario.rect.width < enemy.rect.x + enemy.rect.width:
             if not self.mario.is_big:
-                self.mario.dead = True
+                self.mario.lives -= 1
             else:
-                self.mario.is_big = False
-                self.mario.rect.y -= 10
+                self.mario.big_to_small(enemy.rect.x , enemy.rect.bottom)
+                self.mario.rect.y -= 30
                 self.mario.state = c.FALL
 
             print("Enemy killed mario")
+
+
+    def mario_collisions_powerup_x(self, powerup):
+        if self.mario.rect.x < powerup.rect.x or self.mario.rect.x + self.mario.rect.width < powerup.rect.x + powerup.rect.width:
+            if not self.mario.is_big:
+                self.mario.small_to_big(powerup.rect.x, powerup.rect.bottom)
+                self.check_mario_collisions_y()
+                self.check_mario_collisions_x()
+                powerup.kill()
 
 
 
@@ -159,7 +171,7 @@ class Level1:
             self.mario_box_collisions_y(box)
 
     def mario_bg_collisions_y(self, element):
-        if element.rect.bottom > self.mario.rect.bottom  :
+        if element.rect.bottom > self.mario.rect.bottom:
             self.mario.vel[1] = 0
             self.mario.rect.bottom = element.rect.top
             self.mario.state = c.WALK # zmien na fall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -252,7 +264,7 @@ class Level1:
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
         brick = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
         enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
-        #box = pygame.sprite.spritecollideany(self.mario, self.box_group)
+        box = pygame.sprite.spritecollideany(self.mario, self.box_group)
 
 
         if bg_elem is None and brick is None and enemy is None:
@@ -261,8 +273,7 @@ class Level1:
 
     def mario_falling(self):
         self.mario.rect.y += 1
-        test_collide_group = pygame.sprite.Group(self.bg_elem_group,
-                                                 self.bricks_group, self.enemy_group, self.box_group)
+        test_collide_group = pygame.sprite.Group(self.bg_elem_group, self.bricks_group, self.enemy_group, self.box_group)
 
 
         if pygame.sprite.spritecollideany(self.mario, test_collide_group) is None:

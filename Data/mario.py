@@ -8,6 +8,9 @@ class Mario(pygame.sprite.Sprite):
         self.sprite_sheet = setup.GFX['mario_bros']
         self.game = game
         self.lives = 3
+        self.score = 0
+
+        
 
         self.setup_timers()
         self.setup_states()

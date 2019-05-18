@@ -14,6 +14,8 @@ class Mushroom(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.direction = c.RIGHT
+
         self.mask = pygame.mask.from_surface(self.image)
 
 
@@ -31,3 +33,11 @@ class Mushroom(pygame.sprite.Sprite):
 
         image = pygame.transform.scale(image,(int(rect.width*2), int(rect.height*2)))
         return image
+
+
+    def move(self):
+        if self.direction == c.LEFT:
+            self.vel = [-2,0]
+        else:
+            self.vel = [2,0]
+        self.rect.x += self.vel[0]

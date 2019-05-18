@@ -24,6 +24,11 @@ class Level1:
         for enemy in self.enemy_group:
             enemy.move()
 
+
+    def move_powrup(self):
+        for powerup in self.powerup_group:
+            powerup.move()
+
     def draw_mario(self):
         return self.mario.draw()
 
@@ -158,6 +163,9 @@ class Level1:
         enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
         box = pygame.sprite.spritecollideany(self.mario, self.box_group)
 
+
+        brick, box = self.prevent_collision_conflict(brick, box)
+
         if bg_elem:
             self.mario_bg_collisions_y(bg_elem)
 
@@ -185,7 +193,7 @@ class Level1:
 
 
     def mario_brick_collisions_y(self, brick):
-        if brick.rect.bottom > self.mario.rect.bottom  :
+        if brick.rect.bottom > self.mario.rect.bottom:
             self.mario.vel[1] = 0
             self.mario.rect.bottom = brick.rect.top
             self.mario.state = c.WALK
@@ -254,10 +262,13 @@ class Level1:
             box.rect.x += self.delta_x
 
         for powerup in self.powerup_group:
+            self.check_mushroom_x_collisions(powerup)
             powerup.rect.x += self.delta_x
+
 
         self.check_mario_collisions_y()
         self.check_mario_collisions_x()
+
 
 
     def check_mario_for_falling(self):
@@ -284,3 +295,48 @@ class Level1:
         self.mario.rect.y -= 1
 
 
+    def check_mushroom_x_collisions(self, powerup):
+        bg_elem = pygame.sprite.spritecollideany(powerup, self.bg_elem_group)
+        box = pygame.sprite.spritecollideany(powerup, self.box_group)
+        brick = pygame.sprite.spritecollideany(powerup, self.bricks_group)
+
+
+
+        if bg_elem:
+            self.mushroom_collisions_x(powerup, bg_elem)
+
+        elif box:
+            self.mushroom_collisions_x(powerup, box)
+
+        elif brick:
+            self.mushroom_collisions_x(powerup, brick)
+
+    def mushroom_collisions_x(self,powerup, element):
+            if powerup.direction == c.RIGHT:
+                powerup.rect.right = element.rect.left
+                powerup.direction = c.LEFT
+                powerup.vel[0] = -2
+                #print("HALO")
+            elif powerup.direction == c.LEFT:
+                powerup.rect.left = element.rect.right
+                powerup.direction = c.RIGHT
+                powerup.vel[0] = 2
+
+
+
+    def prevent_collision_conflict(self, obstacle1, obstacle2):
+        """Allows collisions only for the item closest to marios centerx"""
+        if obstacle1 and obstacle2:
+            obstacle1_distance = self.mario.rect.centerx - obstacle1.rect.centerx
+            if obstacle1_distance < 0:
+                obstacle1_distance *= -1
+            obstacle2_distance = self.mario.rect.centerx - obstacle2.rect.centerx
+            if obstacle2_distance < 0:
+                obstacle2_distance *= -1
+
+            if obstacle1_distance < obstacle2_distance:
+                obstacle2 = False
+            else:
+                obstacle1 = False
+
+        return obstacle1, obstacle2

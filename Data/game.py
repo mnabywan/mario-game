@@ -58,6 +58,7 @@ class Game(object):
         #self.level.mario.move()
         self.level.move_mario()
         self.level.move_enemy()
+        self.level.move_powrup()
         #if(self.level.mario.state == c.STAND):
         #    print("stand")
         #elif(self.level.mario.state == c.WALK):

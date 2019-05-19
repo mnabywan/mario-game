@@ -163,7 +163,6 @@ class Level1:
         enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
         box = pygame.sprite.spritecollideany(self.mario, self.box_group)
 
-
         brick, box = self.prevent_collision_conflict(brick, box)
 
         if bg_elem:
@@ -182,7 +181,7 @@ class Level1:
         if element.rect.bottom > self.mario.rect.bottom:
             self.mario.vel[1] = 0
             self.mario.rect.bottom = element.rect.top
-            self.mario.state = c.WALK # zmien na fall!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            self.mario.state = c.WALK
 
         elif self.mario.rect.top > element.rect.top:
             self.mario.rect.top = element.rect.bottom
@@ -263,6 +262,9 @@ class Level1:
 
         for powerup in self.powerup_group:
             self.check_mushroom_x_collisions(powerup)
+            powerup.rect.y += 2
+            self.check_mushroom_y_collisions(powerup)
+            powerup.rect.y -= powerup.vel[1]
             powerup.rect.x += self.delta_x
 
 
@@ -321,6 +323,41 @@ class Level1:
                 powerup.rect.left = element.rect.right
                 powerup.direction = c.RIGHT
                 powerup.vel[0] = 2
+
+    def check_mushroom_y_collisions(self, powerup):
+        bg_elem = pygame.sprite.spritecollideany(powerup, self.bg_elem_group)
+        box = pygame.sprite.spritecollideany(powerup, self.box_group)
+        brick = pygame.sprite.spritecollideany(powerup, self.bricks_group)
+
+
+
+        if bg_elem:
+            self.mushroom_collisions_y(powerup, bg_elem)
+            print("kol")
+
+        elif box:
+            self.mushroom_collisions_y(powerup, box)
+            print("kol_box")
+
+
+        elif brick:
+            self.mushroom_collisions_y(powerup, brick)
+            print("kol_brick")
+
+
+        elif not bg_elem and not box and not brick:
+            print("NIE MA kolizji")
+            #powerup.rect.x += 2
+            #powerup.rect.y += 2
+
+    def mushroom_collisions_y(self, powerup ,element):
+        if element.rect.bottom > powerup.rect.bottom:
+            powerup.vel[1] = 0
+            powerup.rect.bottom = element.rect.top
+
+        elif powerup.rect.top > element.rect.top:
+            powerup.rect.top = element.rect.bottom
+            #self.mario.is_big = True
 
 
 

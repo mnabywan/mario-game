@@ -13,6 +13,7 @@ class Mushroom(pygame.sprite.Sprite):
         self.image = self.images[self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.x = x
+        self.vel = [0,0]
         self.rect.y = y
         self.direction = c.RIGHT
 

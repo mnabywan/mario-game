@@ -3,20 +3,19 @@ from . import setup
 from . import constants as c
 
 class Coin(pygame.sprite.Sprite):
-    def __init__(self, x, y, score_group):
+    def __init__(self, x, y):
         self.sprite_sheet = setup.GFX['objects']
         pygame.sprite.Sprite.__init__(self)
         self.images = []
         self.load_images_from_sheet()
 
-        self.frame_index = 0
+        self.frame_index = 2
         self.image = self.images[self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.score_group = score_group
 
 
     def load_images_from_sheet(self):

@@ -59,6 +59,7 @@ class Level1:
         self.enemy_group.draw(self.screen)
         self.box_group.draw(self.screen)
         self.powerup_group.draw(self.screen)
+        self.coin_group.draw(self.screen)
         #self.screegn.blit(self.bg, self.bg_pos)
 
     def read_map(self):
@@ -74,6 +75,7 @@ class Level1:
         self.enemy_group = pygame.sprite.Group()
         self.box_group = pygame.sprite.Group()
         self.powerup_group = pygame.sprite.Group()
+        self.coin_group = pygame.sprite.Group()
 
 
         for i in range(0, c.HEIGHT_ELEMENTS, 1):
@@ -92,6 +94,10 @@ class Level1:
 
                 elif self.map[i][j] == "6":
                     box = Box(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.MUSHROOM, self.powerup_group)
+                    self.box_group.add(box)
+
+                elif self.map[i][j] == "7":
+                    box = Box(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.COIN, self.coin_group)
                     self.box_group.add(box)
 
         #enemy1 = Enemy(200, c.GROUND_HEIGHT, c.LEFT)
@@ -227,6 +233,8 @@ class Level1:
             if not box.is_bumped and box.content == c.MUSHROOM:
                 print("was not bumped")
                 box.bump()
+            elif not box.is_bumped and box.content == c.COIN:
+                box.bump()
             else:
                 print("was bumped")
 
@@ -259,6 +267,9 @@ class Level1:
 
         for box in self.box_group:
             box.rect.x += self.delta_x
+
+        for coin in self.coin_group:
+            coin.rect.x += self.delta_x
 
         for powerup in self.powerup_group:
             self.check_mushroom_x_collisions(powerup)

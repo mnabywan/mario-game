@@ -2,6 +2,7 @@ import pygame
 from . import setup
 from . import constants as c
 from . import powerup
+from . import coin
 
 class Box(pygame.sprite.Sprite):
     def __init__(self, x, y,  content, group):
@@ -58,6 +59,8 @@ class Box(pygame.sprite.Sprite):
         if self.content == c.MUSHROOM:
             self.group.add(powerup.Mushroom(self.rect.x, self.rect.y - c.MULTIPLICATION ))
 
+        if self.content == c.COIN:
+            self.group.add(coin.Coin(self.rect.x, self.rect.y - c.MULTIPLICATION))
 
         self.frame_index = 3
         self.image = self.images[self.frame_index]

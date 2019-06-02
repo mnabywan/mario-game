@@ -5,9 +5,10 @@ from . import powerup
 from . import coin
 
 class Box(pygame.sprite.Sprite):
-    def __init__(self, x, y,  content, group):
+    def __init__(self, x, y,  content, group, visible):
         self.sprite_sheet = setup.GFX['tiles']
         pygame.sprite.Sprite.__init__(self)
+        self.visible = visible
         self.images = []
         self.load_images_from_sheet()
 
@@ -29,8 +30,12 @@ class Box(pygame.sprite.Sprite):
 
     def load_images_from_sheet(self):
         """Create frame list"""
-        self.images.append(
-            self.get_image(384, 0, 16, 16))
+        if not self.visible:
+            self.images.append(
+                self.get_image(450, 0, 16, 16))
+        else:
+            self.images.append(
+                self.get_image(384, 0, 16, 16))
         self.images.append(
             self.get_image(400, 0, 16, 16))
         self.images.append(

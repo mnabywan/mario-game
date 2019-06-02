@@ -14,14 +14,16 @@ class Enemy(pygame.sprite.Sprite):
         self.load_images_from_sheet()
         self.frame_index = 0
         self.direction = direction
+        self.wait_before_death = 20
         self.dead = False
+        self.falling = False
 
         self.image = self.images[self.frame_index]
         self.rect = self.image.get_rect()
         self.initial_vel()
         self.rect.x = x
         self.rect.y = y
-
+        self.r = 0
 
 
         self.mask = pygame.mask.from_surface(self.image)
@@ -59,15 +61,27 @@ class Enemy(pygame.sprite.Sprite):
                 self.vel = [2,0]
 
             self.rect.x += self.vel[0]
+            ##self.rect.y += 2
+            if not self.falling:
+                self.r += self.vel[0]
+            if self.r <= -120:
+                self.direction = c.RIGHT
+            if self.r >= 120:
+                self.direction = c.LEFT
 
         if self.dead:
             self.kill()
 
     def die(self):
-        self.frame_index = 2
-        self.image = self.images[self.frame_index]
         self.dead = True
+        self.frame_index = 2
+        self.vel = [0, 0]
+        self.image = self.images[self.frame_index]
+        self.wait_before_death -= 1
+        if self.wait_before_death == 0:
+            self.kill()
 
 
     def draw(self):
         self.enemy_group.draw(self.game.level.screen)
+

@@ -4,6 +4,7 @@ from Data.mario import Mario
 from Data.brick import Brick
 from Data.enemy import Enemy
 from Data.box import Box
+from Data.score import Score
 import os
 from . import setup
 
@@ -15,6 +16,7 @@ class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
         self.mario = Mario(self.game)
+        self.score = Score(5, 5)
         self.init_background(width, heigth)
 
     def move_mario(self):
@@ -22,7 +24,10 @@ class Level1:
 
     def move_enemy(self):
         for enemy in self.enemy_group:
-            enemy.move()
+            if not enemy.dead:
+                enemy.move()
+            else:
+                enemy.die()
 
 
     def move_powrup(self):
@@ -60,10 +65,11 @@ class Level1:
         self.box_group.draw(self.screen)
         self.powerup_group.draw(self.screen)
         self.coin_group.draw(self.screen)
+
         #self.screegn.blit(self.bg, self.bg_pos)
 
     def read_map(self):
-        f = open('./assets/map.txt')
+        f = open('/home/mateusz/Pictures/mario2405/MarioGame-master/assets/map.txt')
         self.map = f.readlines()
         for i in range(0, c.HEIGHT_ELEMENTS, 1):
             self.map[i] = self.map[i].split()
@@ -93,12 +99,18 @@ class Level1:
                     self.enemy_group.add(enemy)
 
                 elif self.map[i][j] == "6":
-                    box = Box(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.MUSHROOM, self.powerup_group)
+                    box = Box(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.MUSHROOM, self.powerup_group, True)
                     self.box_group.add(box)
 
                 elif self.map[i][j] == "7":
-                    box = Box(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.COIN, self.coin_group)
+                    box = Box(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.COIN, self.coin_group, True)
                     self.box_group.add(box)
+                elif self.map[i][j] == "8":
+                    box = Box(c.MULTIPLICATION * j, c.MULTIPLICATION * i, c.MUSHROOM, self.powerup_group, False)
+                    self.box_group.add(box)
+                elif self.map[i][j] == "9":
+                    brick = Brick(c.MULTIPLICATION*j, c.MULTIPLICATION*i)
+                    self.bricks_group.add(brick)
 
         #enemy1 = Enemy(200, c.GROUND_HEIGHT, c.LEFT)
         #enemy2 = Enemy(300, c.GROUND_HEIGHT, c.RIGHT)
@@ -106,18 +118,22 @@ class Level1:
 
         #self.enemy_group.add(enemy1, enemy2)
 
+
+
     def check_mario_collisions_x(self):
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
         brick = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
         enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
         box = pygame.sprite.spritecollideany(self.mario, self.box_group)
         powerup = pygame.sprite.spritecollideany(self.mario, self.powerup_group)
+        coin = pygame.sprite.spritecollideany(self.mario, self.coin_group)
 
         if bg_elem:
             self.mario_collisions_x(bg_elem)
 
         elif brick:
             self.mario_collisions_x(brick)
+            self.mario.can_jump = False
 
         elif enemy:
             self.mario_collisions_enemy_x(enemy)
@@ -127,6 +143,10 @@ class Level1:
 
         elif powerup:
             self.mario_collisions_powerup_x(powerup)
+
+        elif not bg_elem and not box and not brick and not powerup and not enemy:
+            self.mario.can_jump = True
+
 
         self.mario_falling()
 
@@ -160,6 +180,7 @@ class Level1:
             self.mario.rect.left = elements.rect.right
 
         self.mario.vel[0] = 0
+        self.mario.vel[1] = 0 #proba
 
 
 
@@ -254,6 +275,43 @@ class Level1:
                 enemy.vel[0] = 2
                 #print("HALO2")
 
+
+
+    def check_enemy_y_collisions(self, enemy):
+        bg_elem = pygame.sprite.spritecollideany(enemy, self.bg_elem_group)
+        box = pygame.sprite.spritecollideany(enemy, self.box_group)
+        brick = pygame.sprite.spritecollideany(enemy, self.bricks_group)
+
+
+
+        if bg_elem:
+            self.enemy_collisions_y(enemy, bg_elem)
+            #print("kol")
+
+        elif box:
+            self.enemy_collisions_y(enemy, box)
+            #print("kol_box")
+
+
+        elif brick:
+            self.enemy_collisions_y(enemy, brick)
+            #print("kol_brick")
+
+
+        elif not bg_elem and not box and not brick:
+            print("NIE MA kolizji")
+            #powerup.rect.x += 2
+            #powerup.rect.y += 2
+
+    def enemy_collisions_y(self, enemy ,element):
+        if element.rect.bottom > enemy.rect.bottom:
+            enemy.vel[1] = 0
+            enemy.rect.bottom = element.rect.top
+
+        elif enemy.rect.top > element.rect.top:
+            enemy.rect.top = element.rect.bottom
+            #self.mario.is_big = True
+
     def update_background_elements(self):
         for element in self.bg_elem_group:
             element.rect.x += self.delta_x
@@ -263,6 +321,8 @@ class Level1:
 
         for enemy in self.enemy_group:
             self.check_enemy_x_collisions(enemy)
+            enemy.rect.y += 2
+            self.check_enemy_y_collisions(enemy) #TODO
             enemy.rect.x += self.delta_x
 
         for box in self.box_group:
@@ -270,6 +330,7 @@ class Level1:
 
         for coin in self.coin_group:
             coin.rect.x += self.delta_x
+            coin.update()
 
         for powerup in self.powerup_group:
             self.check_mushroom_x_collisions(powerup)
@@ -278,11 +339,8 @@ class Level1:
             powerup.rect.y -= powerup.vel[1]
             powerup.rect.x += self.delta_x
 
-
         self.check_mario_collisions_y()
         self.check_mario_collisions_x()
-
-
 
     def check_mario_for_falling(self):
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
@@ -290,30 +348,25 @@ class Level1:
         enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
         box = pygame.sprite.spritecollideany(self.mario, self.box_group)
 
-
-        if bg_elem is None and brick is None and enemy is None:
+        if bg_elem is None and brick is None and enemy is None and box is None:
             self.mario.state = c.FALL
-
 
     def mario_falling(self):
         self.mario.rect.y += 1
         test_collide_group = pygame.sprite.Group(self.bg_elem_group, self.bricks_group, self.enemy_group, self.box_group)
 
-
         if pygame.sprite.spritecollideany(self.mario, test_collide_group) is None:
             if self.mario.state != c.JUMP:
+                self.mario.gravity = c.GRAVITY
+                self.mario.vel[1] = self.mario.max_y_vel
                 self.mario.state = c.FALL
 
-
         self.mario.rect.y -= 1
-
 
     def check_mushroom_x_collisions(self, powerup):
         bg_elem = pygame.sprite.spritecollideany(powerup, self.bg_elem_group)
         box = pygame.sprite.spritecollideany(powerup, self.box_group)
         brick = pygame.sprite.spritecollideany(powerup, self.bricks_group)
-
-
 
         if bg_elem:
             self.mushroom_collisions_x(powerup, bg_elem)
@@ -325,11 +378,12 @@ class Level1:
             self.mushroom_collisions_x(powerup, brick)
 
     def mushroom_collisions_x(self,powerup, element):
+
             if powerup.direction == c.RIGHT:
                 powerup.rect.right = element.rect.left
                 powerup.direction = c.LEFT
                 powerup.vel[0] = -2
-                #print("HALO")
+
             elif powerup.direction == c.LEFT:
                 powerup.rect.left = element.rect.right
                 powerup.direction = c.RIGHT
@@ -340,21 +394,17 @@ class Level1:
         box = pygame.sprite.spritecollideany(powerup, self.box_group)
         brick = pygame.sprite.spritecollideany(powerup, self.bricks_group)
 
-
-
         if bg_elem:
             self.mushroom_collisions_y(powerup, bg_elem)
-            print("kol")
+            #print("kol")
 
         elif box:
             self.mushroom_collisions_y(powerup, box)
-            print("kol_box")
-
+            #print("kol_box")
 
         elif brick:
             self.mushroom_collisions_y(powerup, brick)
-            print("kol_brick")
-
+            #print("kol_brick")
 
         elif not bg_elem and not box and not brick:
             print("NIE MA kolizji")

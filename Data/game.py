@@ -59,14 +59,14 @@ class Game(object):
         self.level.move_mario()
         self.level.move_enemy()
         self.level.move_powrup()
-        #if(self.level.mario.state == c.STAND):
-        #    print("stand")
-        #elif(self.level.mario.state == c.WALK):
-        #    print("walk")
-        #elif(self.level.mario.state == c.JUMP):
-        #    print("jump")
-        #elif(self.level.mario.state == c.FALL):
-        #    print("fall")
+        if(self.level.mario.state == c.STAND):
+           print("stand")
+        elif(self.level.mario.state == c.WALK):
+           print("walk")
+        elif(self.level.mario.state == c.JUMP):
+           print("jump")
+        elif(self.level.mario.state == c.FALL):
+           print("fall")
 
     def draw(self):
         self.level.draw_background()

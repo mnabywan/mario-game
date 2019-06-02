@@ -9,11 +9,12 @@ class Coin(pygame.sprite.Sprite):
         self.images = []
         self.load_images_from_sheet()
 
-        self.frame_index = 2
+        self.frame_index = 0
         self.image = self.images[self.frame_index]
         self.rect = self.image.get_rect()
-        self.rect.x = x
+        self.rect.x = x + 5
         self.rect.y = y
+        self.start_y = y
         self.mask = pygame.mask.from_surface(self.image)
 
 
@@ -36,3 +37,13 @@ class Coin(pygame.sprite.Sprite):
                                    (int(rect.width*2),
                                     int(rect.height*2)))
         return image
+
+    def update(self):
+        self.rect.y -= 1
+        self.image = self.images[self.frame_index]
+        self.mask = pygame.mask.from_surface(self.image)
+        if (self.start_y - self.rect.y) % 10 == 0:
+            self.frame_index += 1
+        if self.frame_index == 4:
+            self.kill()
+

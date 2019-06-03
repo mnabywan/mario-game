@@ -26,7 +26,8 @@ class Game(object):
         self.tps_clock = pygame.time.Clock()
         self.tps_delta = 0.0
 
-        while self.level.mario.alive():
+        counter = 0
+        while self.level.mario.alive() and self.level.game_info.time:
             # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -37,6 +38,11 @@ class Game(object):
             # Ticking
             self.tps_delta += self.tps_clock.tick() / 1000.0
             while self.tps_delta > 1 / self.tps_max:
+                counter += 1
+                print(counter)
+                if counter > 30:
+                    counter = 1
+                    self.level.game_info.time -= 1
                 self.tick()
                 self.tps_delta -= 1 / self.tps_max
 
@@ -71,6 +77,7 @@ class Game(object):
     def draw(self):
         self.level.draw_background()
         self.level.draw_mario()
+        self.level.draw_game_info()
 
     def load_all_gfx(directory, colorkey=(255, 0, 255), accept=('.png', 'jpg', 'bmp')):
         graphics = {}

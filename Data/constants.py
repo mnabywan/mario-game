@@ -6,8 +6,9 @@ SCREEN_SIZE = (SCREEN_WIDTH,SCREEN_HEIGHT)
 GROUND_HEIGHT = SCREEN_HEIGHT - 50  #???
 
 #colours (red, green,  blue)
-BLACK = (0,0,0)
-RED = (255,0,0)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+WHITE = (255, 255, 255)
 
 #tps
 TPS_MAX = 70.0

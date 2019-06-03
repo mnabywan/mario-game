@@ -4,7 +4,7 @@ from Data.mario import Mario
 from Data.brick import Brick
 from Data.enemy import Enemy
 from Data.box import Box
-from Data.score import Score
+from Data.game_info import GameInfo
 import os
 from . import setup
 
@@ -16,7 +16,7 @@ class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
         self.mario = Mario(self.game)
-        self.score = Score(5, 5)
+        self.game_info = GameInfo(self.game)
         self.init_background(width, heigth)
 
     def move_mario(self):
@@ -39,6 +39,9 @@ class Level1:
 
     def draw_enemy(self):
         return self.enemy_group.draw(self.screen)
+
+    def draw_game_info(self):
+        return self.game_info.print_game_info()
 
     def init_background(self, width, heigth):
         self.screen_height = heigth
@@ -69,7 +72,7 @@ class Level1:
         #self.screegn.blit(self.bg, self.bg_pos)
 
     def read_map(self):
-        f = open('/home/mateusz/Pictures/mario2405/MarioGame-master/assets/map.txt')
+        f = open('./assets/map.txt')
         self.map = f.readlines()
         for i in range(0, c.HEIGHT_ELEMENTS, 1):
             self.map[i] = self.map[i].split()

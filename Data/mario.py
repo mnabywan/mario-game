@@ -58,7 +58,7 @@ class Mario(pygame.sprite.Sprite):
         if self.vel[0] == 0:
             self.frame_index = 0
 
-        if pressed[pygame.K_x] and self.fire:
+        if pressed[pygame.K_x] and self.fire and self.can_shoot:
             now = pygame.time.get_ticks()
             print(now)
             if self.number_of_fireball % 2 == 0:
@@ -97,7 +97,7 @@ class Mario(pygame.sprite.Sprite):
 
         pressed = pygame.key.get_pressed()
 
-        if pressed[pygame.K_x] and self.fire: # and self.can_shoot:
+        if pressed[pygame.K_x] and self.fire and self.can_shoot:
             now = pygame.time.get_ticks()
             print(now)
             if self.number_of_fireball % 2 == 0:
@@ -106,7 +106,7 @@ class Mario(pygame.sprite.Sprite):
                     self.last_shot = now
                     self.number_of_fireball += 1
             else:
-                if now - self.last_shot > 300:
+                if now - self.last_shot > 500:
                     self.shooting()
                     self.last_shot = now
                     self.number_of_fireball += 1
@@ -145,7 +145,7 @@ class Mario(pygame.sprite.Sprite):
         self.vel[1] += self.gravity
         self.state = c.FALL
 
-        if pressed[pygame.K_x] and self.fire:# and self.can_shoot:
+        if pressed[pygame.K_x] and self.fire and self.can_shoot:
             now = pygame.time.get_ticks()
             print(now)
             if self.number_of_fireball % 2 == 0:
@@ -154,7 +154,7 @@ class Mario(pygame.sprite.Sprite):
                     self.last_shot = now
                     self.number_of_fireball += 1
             else:
-                if now - self.last_shot > 300:
+                if now - self.last_shot > 500:
                     self.shooting()
                     self.last_shot = now
                     self.number_of_fireball += 1
@@ -236,14 +236,15 @@ class Mario(pygame.sprite.Sprite):
             if self.facing_right:
                 fireball = Fireball(self.rect.x, self.rect.y, self.fireball_group, c.RIGHT)
                 self.fireball_group.add(fireball)
+
             elif not self.facing_right:
                 fireball = Fireball(self.rect.x, self.rect.y, self.fireball_group, c.LEFT)
                 self.fireball_group.add(fireball)
 
-        if self.shooting_counter < 5:
-            self.shooting_counter += 1
-        elif self.shooting_counter == 5:
-            self.can_shoot = True
+            if self.shooting_counter < 5:
+                self.shooting_counter += 1
+            elif self.shooting_counter == 5:
+                self.can_shoot = True
 
     def check_for_death_jump(self):
         if self.rect.y >= self.game.screen_height - self.rect.height - 10:
@@ -423,6 +424,7 @@ class Mario(pygame.sprite.Sprite):
 
     def small_to_big(self, x, bottom):
         self.is_big = True
+        self.fire = False
         self.actualise_image()
         self.actualise_rect()
         print(self.rect.x)
@@ -443,6 +445,7 @@ class Mario(pygame.sprite.Sprite):
     def fire_to_small(self, x, bottom):
         self.is_big = False
         self.fire = False
+        self.can_shoot = False
         self.actualise_image()
         self.actualise_rect()
         self.actualise_rect_position(x, bottom)

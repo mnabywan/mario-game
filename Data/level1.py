@@ -160,18 +160,21 @@ class Level1:
         elif not bg_elem and not box and not brick and not powerup and not enemy:
             self.mario.can_jump = True
 
-
         self.mario_falling()
+
 
     def mario_collisions_enemy_x(self, enemy):
         if self.mario.rect.x < enemy.rect.x or self.mario.rect.x+self.mario.rect.width < enemy.rect.x + enemy.rect.width:
             if not self.mario.is_big:
                 self.mario.lives -= 1
-            else:
-                self.mario.big_to_small(enemy.rect.x , enemy.rect.bottom)
+            elif self.mario.is_big and self.mario.fire:
+                self.mario.fire_to_small(enemy.rect.x, enemy.rect.bottom)
                 self.mario.rect.y -= 30
                 self.mario.state = c.FALL
-
+            elif self.mario.is_big and not self.mario.fire:
+                self.mario.big_to_small(enemy.rect.x, enemy.rect.bottom)
+                self.mario.rect.y -= 30
+                self.mario.state = c.FALL
             print("Enemy killed mario")
 
 
@@ -327,7 +330,7 @@ class Level1:
             #powerup.rect.x += 2
             #powerup.rect.y += 2
 
-    def enemy_collisions_y(self, enemy ,element):
+    def enemy_collisions_y(self, enemy, element):
         if element.rect.bottom > enemy.rect.bottom:
             enemy.vel[1] = 0
             enemy.rect.bottom = element.rect.top
@@ -336,6 +339,39 @@ class Level1:
             enemy.rect.top = element.rect.bottom
             #self.mario.is_big = True
 
+    def check_fireball_y_collisions(self, fireball):
+        bg_elem = pygame.sprite.spritecollideany(fireball, self.bg_elem_group)
+        if bg_elem:
+            if bg_elem.rect.bottom > fireball.rect.bottom:
+                fireball.go_down = False
+        elif not bg_elem:
+            if fireball.rect.top < 350 and not fireball.go_down:
+                fireball.go_down = True
+
+    def check_fireball_x_collisions(self, fireball):
+        bg_elem = pygame.sprite.spritecollideany(fireball, self.bg_elem_group)
+        box = pygame.sprite.spritecollideany(fireball, self.box_group)
+        brick = pygame.sprite.spritecollideany(fireball, self.bricks_group)
+        enemy = pygame.sprite.spritecollideany(fireball, self.enemy_group)
+
+        if bg_elem:
+            if fireball.rect.x < bg_elem.rect.x:
+                fireball.kill()
+        elif box:
+            if fireball.rect.x < box.rect.x:
+                fireball.kill()
+        if brick:
+            if fireball.rect.x < brick.rect.x:
+                fireball.kill()
+
+        elif enemy:
+            enemy.die()
+            fireball.kill()
+
+        elif not bg_elem:
+            if fireball.rect.top < 350 and not fireball.go_down:
+                fireball.go_down = True
+
     def update_background_elements(self):
         for element in self.bg_elem_group:
             element.rect.x += self.delta_x
@@ -343,8 +379,11 @@ class Level1:
         for brick in self.bricks_group:
             brick.rect.x += self.delta_x
 
-        for fireball in self.powerup_group:
+        for fireball in self.fireball_group:
+            self.check_fireball_y_collisions(fireball)
             fireball.rect.x += self.delta_x
+            self.check_fireball_x_collisions(fireball)
+
 
         for enemy in self.enemy_group:
             self.check_enemy_x_collisions(enemy)
@@ -405,7 +444,6 @@ class Level1:
             self.mushroom_collisions_x(powerup, brick)
 
     def mushroom_collisions_x(self,powerup, element):
-
             if powerup.direction == c.RIGHT:
                 powerup.rect.right = element.rect.left
                 powerup.direction = c.LEFT

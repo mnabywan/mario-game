@@ -15,9 +15,9 @@ from . import setup
 class Level1:
     def __init__(self, game, width, heigth):
         self.game = game
-        self.mario = Mario(self.game)
-        self.game_info = GameInfo(self.game)
         self.init_background(width, heigth)
+        self.mario = Mario(self.game, self.fireball_group)
+        self.game_info = GameInfo(self.game)
 
     def move_mario(self):
         return self.mario.handle_state()
@@ -29,10 +29,16 @@ class Level1:
             else:
                 enemy.die()
 
-
     def move_powrup(self):
         for powerup in self.powerup_group:
             powerup.move()
+
+    def move_fireball(self):
+        for fireball in self.fireball_group:
+            fireball.move()
+
+    def draw_fireball(self):
+        return self.fireball_group.draw(self.screen)
 
     def draw_mario(self):
         return self.mario.draw()
@@ -68,6 +74,7 @@ class Level1:
         self.box_group.draw(self.screen)
         self.powerup_group.draw(self.screen)
         self.coin_group.draw(self.screen)
+        self.fireball_group.draw(self.screen) #dodane
 
         #self.screegn.blit(self.bg, self.bg_pos)
 
@@ -85,6 +92,7 @@ class Level1:
         self.box_group = pygame.sprite.Group()
         self.powerup_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
+        self.fireball_group = pygame.sprite.Group()
 
 
         for i in range(0, c.HEIGHT_ELEMENTS, 1):
@@ -108,9 +116,11 @@ class Level1:
                 elif self.map[i][j] == "7":
                     box = Box(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.COIN, self.coin_group, True)
                     self.box_group.add(box)
+
                 elif self.map[i][j] == "8":
                     box = Box(c.MULTIPLICATION * j, c.MULTIPLICATION * i, c.MUSHROOM, self.powerup_group, False)
                     self.box_group.add(box)
+
                 elif self.map[i][j] == "9":
                     brick = Brick(c.MULTIPLICATION*j, c.MULTIPLICATION*i)
                     self.bricks_group.add(brick)
@@ -169,9 +179,16 @@ class Level1:
         if self.mario.rect.x < powerup.rect.x or self.mario.rect.x + self.mario.rect.width < powerup.rect.x + powerup.rect.width:
             if not self.mario.is_big:
                 self.mario.small_to_big(powerup.rect.x, powerup.rect.bottom)
-                self.check_mario_collisions_y()
-                self.check_mario_collisions_x()
+                #self.check_mario_collisions_y()
+                #self.check_mario_collisions_x()
                 powerup.kill()
+            elif self.mario.is_big:
+                self.mario.big_to_fire(powerup.rect.x, powerup.rect.bottom)
+                #self.check_mario_collisions_y()
+                #self.check_mario_collisions_x()
+                powerup.kill()
+            elif self.mario.fire:
+                pass
 
 
 
@@ -192,7 +209,7 @@ class Level1:
         brick = pygame.sprite.spritecollideany(self.mario, self.bricks_group)
         enemy = pygame.sprite.spritecollideany(self.mario, self.enemy_group)
         box = pygame.sprite.spritecollideany(self.mario, self.box_group)
-
+        powerup = pygame.sprite.spritecollideany(self.mario, self.powerup_group)
         brick, box = self.prevent_collision_conflict(brick, box)
 
         if bg_elem:
@@ -206,6 +223,9 @@ class Level1:
 
         elif box:
             self.mario_box_collisions_y(box)
+
+        elif powerup:
+            pass
 
     def mario_bg_collisions_y(self, element):
         if element.rect.bottom > self.mario.rect.bottom:
@@ -302,7 +322,8 @@ class Level1:
 
 
         elif not bg_elem and not box and not brick:
-            print("NIE MA kolizji")
+            pass
+            #print("NIE MA kolizji")
             #powerup.rect.x += 2
             #powerup.rect.y += 2
 
@@ -321,6 +342,9 @@ class Level1:
 
         for brick in self.bricks_group:
             brick.rect.x += self.delta_x
+
+        for fireball in self.powerup_group:
+            fireball.rect.x += self.delta_x
 
         for enemy in self.enemy_group:
             self.check_enemy_x_collisions(enemy)

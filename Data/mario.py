@@ -1,22 +1,28 @@
 import pygame
 from Data import setup, constants as c
+from Data.fireball import Fireball
 
 
 class Mario(pygame.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, game, fireball_group):
         pygame.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['mario_bros']
         self.game = game
         self.lives = 3
         self.score = 0
+        self.fireball_group = fireball_group
         # self.can_jump = True
+        self.number_of_fireball = 0
 
+        self.can_shoot = True
         self.setup_timers()
         self.setup_states()
         self.setup_counters()
         self.setup_movement()
         self.load_images_from_sheet()
 
+        self.last_shot = 0
+        self.shooting_counter = 0
         self.state = c.STAND
         self.frame_index = 0
         self.image = self.right_small_frames[0]
@@ -41,6 +47,9 @@ class Mario(pygame.sprite.Sprite):
         self.mario_group = pygame.sprite.Group()
         self.mario_group.add(self)
 
+    def setup_shooting_counter(self):
+        self.shooting_counter = 0
+
     def standing(self):
         pressed = pygame.key.get_pressed()
 
@@ -48,6 +57,21 @@ class Mario(pygame.sprite.Sprite):
         self.vel[0] -= self.vel[0] / 2
         if self.vel[0] == 0:
             self.frame_index = 0
+
+        if pressed[pygame.K_x] and self.fire:
+            now = pygame.time.get_ticks()
+            print(now)
+            if self.number_of_fireball % 2 == 0:
+                if now - self.last_shot > 80:
+                    self.shooting()
+                    self.last_shot = now
+                    self.number_of_fireball += 1
+            else:
+                if now - self.last_shot > 500:
+                    self.shooting()
+                    self.last_shot = now
+                    self.number_of_fireball += 1
+
 
         if pressed[pygame.K_RIGHT]:
             self.facing_right = True
@@ -72,6 +96,21 @@ class Mario(pygame.sprite.Sprite):
             self.frame_index = (self.frame_index % 3) + 1
 
         pressed = pygame.key.get_pressed()
+
+        if pressed[pygame.K_x] and self.fire: # and self.can_shoot:
+            now = pygame.time.get_ticks()
+            print(now)
+            if self.number_of_fireball % 2 == 0:
+                if now - self.last_shot > 80:
+                    self.shooting()
+                    self.last_shot = now
+                    self.number_of_fireball += 1
+            else:
+                if now - self.last_shot > 300:
+                    self.shooting()
+                    self.last_shot = now
+                    self.number_of_fireball += 1
+
         if pressed[pygame.K_RIGHT] and self.coordinate_x < self.game.level.level_width - self.rect.width - self.vel[0]:
 
             self.vel[0] = self.speed
@@ -105,6 +144,20 @@ class Mario(pygame.sprite.Sprite):
         self.gravity = c.JUMP_GRAVITY
         self.vel[1] += self.gravity
         self.state = c.FALL
+
+        if pressed[pygame.K_x] and self.fire:# and self.can_shoot:
+            now = pygame.time.get_ticks()
+            print(now)
+            if self.number_of_fireball % 2 == 0:
+                if now - self.last_shot > 80:
+                    self.shooting()
+                    self.last_shot = now
+                    self.number_of_fireball += 1
+            else:
+                if now - self.last_shot > 300:
+                    self.shooting()
+                    self.last_shot = now
+                    self.number_of_fireball += 1
 
         if self.vel[1] >= 0 and self.vel[1] < self.max_y_vel:
             self.gravity = c.GRAVITY  # bylo same gravity #ok
@@ -178,6 +231,19 @@ class Mario(pygame.sprite.Sprite):
 
         # elif pressed[pygame.K_RIGHT]:
         #   self.vel[0] += self.speed
+    def shooting(self):
+        if self.fire:
+            if self.facing_right:
+                fireball = Fireball(self.rect.x, self.rect.y, self.fireball_group, c.RIGHT)
+                self.fireball_group.add(fireball)
+            elif not self.facing_right:
+                fireball = Fireball(self.rect.x, self.rect.y, self.fireball_group, c.LEFT)
+                self.fireball_group.add(fireball)
+
+        if self.shooting_counter < 5:
+            self.shooting_counter += 1
+        elif self.shooting_counter == 5:
+            self.can_shoot = True
 
     def check_for_death_jump(self):
         if self.rect.y >= self.game.screen_height - self.rect.height - 10:
@@ -254,6 +320,35 @@ class Mario(pygame.sprite.Sprite):
             new_frame = pygame.transform.flip(frame, True, False)
             self.left_big_frames.append(new_frame)
 
+
+        self.right_fire_frames.append(
+            self.get_image(176, 48, 16, 32))  # Right standing [0]
+        self.right_fire_frames.append(
+            self.get_image(81, 48, 16, 32))  # Right walking 1 [1]
+        self.right_fire_frames.append(
+            self.get_image(97, 48, 15, 32))  # Right walking 2 [2]
+        self.right_fire_frames.append(
+            self.get_image(113, 48, 15, 32))  # Right walking 3 [3]
+        self.right_fire_frames.append(
+            self.get_image(144, 48, 16, 32))  # Right jump [4]
+        self.right_fire_frames.append(
+            self.get_image(128, 48, 16, 32))  # Right skid [5]
+        self.right_fire_frames.append(
+            self.get_image(336, 48, 16, 32))  # Right throwing [6]
+        self.right_fire_frames.append(
+            self.get_image(160, 58, 16, 22))  # Right crouching [7]
+        self.right_fire_frames.append(
+            self.get_image(0, 0, 0, 0))  # Place holder [8]
+        self.right_fire_frames.append(
+            self.get_image(193, 50, 16, 29))  # Frame 1 of flag pole slide [9]
+        self.right_fire_frames.append(
+            self.get_image(209, 50, 16, 29))  # Frame 2 of flag pole slide [10]
+
+        for frame in self.right_fire_frames:
+            new_frame = pygame.transform.flip(frame, True, False)
+            self.left_fire_frames.append(new_frame)
+
+
     def alive(self):
         if self.lives <= 0 or self.dead:
             return False
@@ -309,17 +404,22 @@ class Mario(pygame.sprite.Sprite):
         if not self.is_big:
             if self.facing_right:
                 self.image = self.right_small_frames[self.frame_index]
-
-
             else:
                 self.image = self.left_small_frames[self.frame_index]
 
-        else:
+        elif self.is_big and not self.fire:
             if self.facing_right:
                 self.image = self.right_big_frames[self.frame_index]
 
             else:
                 self.image = self.left_big_frames[self.frame_index]
+
+        elif self.is_big and self.fire:
+            if self.facing_right:
+                self.image = self.right_fire_frames[self.frame_index]
+
+            else:
+                self.image = self.left_fire_frames[self.frame_index]
 
     def small_to_big(self, x, bottom):
         self.is_big = True
@@ -333,6 +433,20 @@ class Mario(pygame.sprite.Sprite):
         self.actualise_image()
         self.actualise_rect()
         self.actualise_rect_position(x, bottom)
+
+    def big_to_fire(self, x, bottom):
+        self.fire = True
+        self.actualise_image()
+        self.actualise_rect()
+        self.actualise_rect_position(x, bottom)
+
+    def fire_to_small(self, x, bottom):
+        self.is_big = False
+        self.fire = False
+        self.actualise_image()
+        self.actualise_rect()
+        self.actualise_rect_position(x, bottom)
+
 
     def actualise_rect(self):
         self.rect = self.image.get_rect()

@@ -167,14 +167,17 @@ class Level1:
         if self.mario.rect.x < enemy.rect.x or self.mario.rect.x+self.mario.rect.width < enemy.rect.x + enemy.rect.width:
             if not self.mario.is_big:
                 self.mario.lives -= 1
+                self.game_info.score -= 50
             elif self.mario.is_big and self.mario.fire:
                 self.mario.fire_to_small(enemy.rect.x, enemy.rect.bottom)
                 self.mario.rect.y -= 30
                 self.mario.state = c.FALL
+                self.game_info.score -= 50
             elif self.mario.is_big and not self.mario.fire:
                 self.mario.big_to_small(enemy.rect.x, enemy.rect.bottom)
                 self.mario.rect.y -= 30
                 self.mario.state = c.FALL
+                self.game_info.score -= 50
             print("Enemy killed mario")
 
 
@@ -204,8 +207,6 @@ class Level1:
 
         self.mario.vel[0] = 0
         self.mario.vel[1] = 0 #proba
-
-
 
     def check_mario_collisions_y(self):
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
@@ -262,6 +263,7 @@ class Level1:
             self.mario.vel[1] = 0
             self.mario.rect.bottom = enemy.rect.top
             enemy.die()
+            self.game_info.score += 200
             self.mario.rect.y -= 50
             self.mario.state = c.JUMP
 
@@ -280,8 +282,11 @@ class Level1:
             if not box.is_bumped and box.content == c.MUSHROOM:
                 print("was not bumped")
                 box.bump()
+                self.game_info.score += 100
             elif not box.is_bumped and box.content == c.COIN:
                 box.bump()
+                self.game_info.coins += 1
+                self.game_info.score += 10
             else:
                 print("was bumped")
 
@@ -366,6 +371,7 @@ class Level1:
 
         elif enemy:
             enemy.die()
+            self.game_info.score += 200
             fireball.kill()
 
         elif not bg_elem:

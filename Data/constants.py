@@ -20,8 +20,6 @@ WIDTH_ELEMENTS = 212
 HEIGHT_ELEMENTS = 14
 MULTIPLICATION = 32
 
-
-
 #mario size
 MARIO_SIZE_MULTIPLIER = 2
 #MARIO_HEIGHT = 64
@@ -32,40 +30,36 @@ STAND = 'stand'
 WALK = 'walk'
 JUMP = 'jump'
 FALL = 'fall'
-SHOOT = 'shoot'
-SMALL_TO_BIG = 'small to big'
-BIG_TO_FIRE = 'big to fire'
-BIG_TO_SMALL = 'big to small'
-#FLAGPOLE = 'flag pole'
-#WALKING_TO_CASTLE = 'walking to castle'
-END_OF_LEVEL = 'end of level'
 
 #mario forces
 WALK_ACCEL = .15
 RUN_ACCEL = 20
-SMALL_TURNAROUND = .35
 
 #GRAVITY = 1.01
 GRAVITY = 0.1
 JUMP_GRAVITY = .31
 JUMP_VEL = -10
-#FAST_JUMP_VEL = -12.5
 MAX_Y_VEL = 11
 
 MAX_RUN_SPEED = 800
 MAX_WALK_SPEED = 6
 
-
 #brick
 BRICK_SIZE_MULTIPLIER = 2.69
 
-#enemy
+#directions
 LEFT = 'left'
 RIGHT = 'right'
-JUMPED_ON = 'jumped on'
-DEATH_JUMP = 'death jump'
-
 
 #inside coin box
 COIN = 'coin'
 MUSHROOM = 'mushroom'
+
+#game states
+START = 'start'
+PLAYING = 'playing'
+PAUSE = 'pause'
+GAMEOVER = 'gameover'
+WIN = 'win'
+
+BEST_SCORE_FILE = "score.txt"

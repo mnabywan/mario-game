@@ -4,6 +4,7 @@ from Data.mario import Mario
 from Data.brick import Brick
 from Data.enemy import Enemy
 from Data.box import Box
+from Data.castle import Castle
 from Data.game_info import GameInfo
 import os
 from . import setup
@@ -18,11 +19,13 @@ class Level1:
         self.init_background(width, heigth)
         self.mario = Mario(self.game, self.fireball_group)
         self.game_info = GameInfo(self.game)
+        self.mario_in_castle = False
 
     def move_mario(self):
         return self.mario.handle_state()
 
     def move_enemy(self):
+        print("move enemy")
         for enemy in self.enemy_group:
             if not enemy.dead:
                 enemy.move()
@@ -74,9 +77,8 @@ class Level1:
         self.box_group.draw(self.screen)
         self.powerup_group.draw(self.screen)
         self.coin_group.draw(self.screen)
+        self.castle_group.draw(self.screen) #CASTLE
         self.fireball_group.draw(self.screen) #dodane
-
-        #self.screegn.blit(self.bg, self.bg_pos)
 
     def read_map(self):
         f = open('./assets/map.txt')
@@ -93,6 +95,7 @@ class Level1:
         self.powerup_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
         self.fireball_group = pygame.sprite.Group()
+        self.castle_group = pygame.sprite.Group()
 
 
         for i in range(0, c.HEIGHT_ELEMENTS, 1):
@@ -125,13 +128,9 @@ class Level1:
                     brick = Brick(c.MULTIPLICATION*j, c.MULTIPLICATION*i)
                     self.bricks_group.add(brick)
 
-        #enemy1 = Enemy(200, c.GROUND_HEIGHT, c.LEFT)
-        #enemy2 = Enemy(300, c.GROUND_HEIGHT, c.RIGHT)
-        #enemy3 = Enemy(1200, c.GROUND_HEIGHT, c.RIGHT)
-
-        #self.enemy_group.add(enemy1, enemy2)
-
-
+                elif self.map[i][j] == "x":
+                    castle = Castle(c.MULTIPLICATION*j, c.MULTIPLICATION*i, c.MULTIPLICATION, c.MULTIPLICATION)
+                    self.castle_group.add(castle)
 
     def check_mario_collisions_x(self):
         bg_elem = pygame.sprite.spritecollideany(self.mario, self.bg_elem_group)
@@ -140,6 +139,7 @@ class Level1:
         box = pygame.sprite.spritecollideany(self.mario, self.box_group)
         powerup = pygame.sprite.spritecollideany(self.mario, self.powerup_group)
         coin = pygame.sprite.spritecollideany(self.mario, self.coin_group)
+        castle = pygame.sprite.spritecollideany(self.mario, self.castle_group)
 
         if bg_elem:
             self.mario_collisions_x(bg_elem)
@@ -152,16 +152,23 @@ class Level1:
             self.mario_collisions_enemy_x(enemy)
 
         elif box:
-            pass     #TODO
+            pass
 
         elif powerup:
             self.mario_collisions_powerup_x(powerup)
+
+        elif castle:
+            self.mario_collisions_castle(castle)
 
         elif not bg_elem and not box and not brick and not powerup and not enemy:
             self.mario.can_jump = True
 
         self.mario_falling()
 
+    def mario_collisions_castle(self, castle):
+        if self.mario.rect.x < castle.rect.x:
+            self.mario.rect.right = castle.rect.left
+            self.mario_in_castle = True
 
     def mario_collisions_enemy_x(self, enemy):
         if self.mario.rect.x < enemy.rect.x or self.mario.rect.x+self.mario.rect.width < enemy.rect.x + enemy.rect.width:
@@ -313,21 +320,14 @@ class Level1:
         box = pygame.sprite.spritecollideany(enemy, self.box_group)
         brick = pygame.sprite.spritecollideany(enemy, self.bricks_group)
 
-
-
         if bg_elem:
             self.enemy_collisions_y(enemy, bg_elem)
-            #print("kol")
 
         elif box:
             self.enemy_collisions_y(enemy, box)
-            #print("kol_box")
-
 
         elif brick:
             self.enemy_collisions_y(enemy, brick)
-            #print("kol_brick")
-
 
         elif not bg_elem and not box and not brick:
             pass
@@ -382,6 +382,9 @@ class Level1:
         for element in self.bg_elem_group:
             element.rect.x += self.delta_x
 
+        for castle in self.castle_group:
+            castle.rect.x += self.delta_x
+
         for brick in self.bricks_group:
             brick.rect.x += self.delta_x
 
@@ -394,7 +397,7 @@ class Level1:
         for enemy in self.enemy_group:
             self.check_enemy_x_collisions(enemy)
             enemy.rect.y += 2
-            self.check_enemy_y_collisions(enemy) #TODO
+            self.check_enemy_y_collisions(enemy)
             enemy.rect.x += self.delta_x
 
         for box in self.box_group:
@@ -491,10 +494,8 @@ class Level1:
             powerup.rect.top = element.rect.bottom
             #self.mario.is_big = True
 
-
-
     def prevent_collision_conflict(self, obstacle1, obstacle2):
-        """Allows collisions only for the item closest to marios centerx"""
+        """Allows collisions only for the item closest to mario"""
         if obstacle1 and obstacle2:
             obstacle1_distance = self.mario.rect.centerx - obstacle1.rect.centerx
             if obstacle1_distance < 0:

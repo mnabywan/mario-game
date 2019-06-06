@@ -2,6 +2,7 @@ import pygame
 from . import setup
 from . import constants as c
 
+
 class Brick(pygame.sprite.Sprite):
     def __init__(self, x, y):
         self.sprite_sheet = setup.GFX['tiles']
@@ -16,15 +17,9 @@ class Brick(pygame.sprite.Sprite):
         self.rect.y = y
         self.mask = pygame.mask.from_surface(self.image)
 
-
-
-
     def load_images_from_sheet(self):
         self.images.append(self.get_image(16, 0, 16, 16))
         self.images.append(self.get_image(432, 0, 16, 16))
-
-
-
 
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""

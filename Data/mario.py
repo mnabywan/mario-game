@@ -9,7 +9,6 @@ class Mario(pygame.sprite.Sprite):
         self.sprite_sheet = setup.GFX['mario_bros']
         self.game = game
         self.lives = 3
-        self.score = 0
         self.fireball_group = fireball_group
         # self.can_jump = True
         self.number_of_fireball = 0
@@ -277,18 +276,6 @@ class Mario(pygame.sprite.Sprite):
             self.get_image(112, 32, 16, 16))  # Right walking 3 [3]
         self.right_small_frames.append(
             self.get_image(144, 32, 16, 16))  # Right jump [4]
-        self.right_small_frames.append(
-            self.get_image(130, 32, 14, 16))  # Right skid [5]
-        self.right_small_frames.append(
-            self.get_image(160, 32, 15, 16))  # Death frame [6]
-        self.right_small_frames.append(
-            self.get_image(320, 8, 16, 24))  # Transition small to big [7]
-        self.right_small_frames.append(
-            self.get_image(241, 33, 16, 16))  # Transition big to small [8]
-        self.right_small_frames.append(
-            self.get_image(194, 32, 12, 16))  # Frame 1 of flag pole Slide [9]
-        self.right_small_frames.append(
-            self.get_image(210, 33, 12, 16))  # Frame 2 of flag pole slide [10]
 
         for frame in self.right_small_frames:
             new_frame = pygame.transform.flip(frame, True, False)
@@ -304,18 +291,7 @@ class Mario(pygame.sprite.Sprite):
             self.get_image(113, 0, 15, 32))  # Right walking 3 [3]
         self.right_big_frames.append(
             self.get_image(144, 0, 16, 32))  # Right jump [4]
-        self.right_big_frames.append(
-            self.get_image(128, 0, 16, 32))  # Right skid [5]
-        self.right_big_frames.append(
-            self.get_image(336, 0, 16, 32))  # Right throwing [6]
-        self.right_big_frames.append(
-            self.get_image(160, 10, 16, 22))  # Right crouching [7]
-        self.right_big_frames.append(
-            self.get_image(272, 2, 16, 29))  # Transition big to small [8]
-        self.right_big_frames.append(
-            self.get_image(193, 2, 16, 30))  # Frame 1 of flag pole slide [9]
-        self.right_big_frames.append(
-            self.get_image(209, 2, 16, 29))  # Frame 2 of flag pole slide [10]
+
 
         for frame in self.right_big_frames:
             new_frame = pygame.transform.flip(frame, True, False)
@@ -332,18 +308,6 @@ class Mario(pygame.sprite.Sprite):
             self.get_image(113, 48, 15, 32))  # Right walking 3 [3]
         self.right_fire_frames.append(
             self.get_image(144, 48, 16, 32))  # Right jump [4]
-        self.right_fire_frames.append(
-            self.get_image(128, 48, 16, 32))  # Right skid [5]
-        self.right_fire_frames.append(
-            self.get_image(336, 48, 16, 32))  # Right throwing [6]
-        self.right_fire_frames.append(
-            self.get_image(160, 58, 16, 22))  # Right crouching [7]
-        self.right_fire_frames.append(
-            self.get_image(0, 0, 0, 0))  # Place holder [8]
-        self.right_fire_frames.append(
-            self.get_image(193, 50, 16, 29))  # Frame 1 of flag pole slide [9]
-        self.right_fire_frames.append(
-            self.get_image(209, 50, 16, 29))  # Frame 2 of flag pole slide [10]
 
         for frame in self.right_fire_frames:
             new_frame = pygame.transform.flip(frame, True, False)

@@ -3,11 +3,10 @@ from Data import constants as c
 import pygame, sys, os
 import Data.tools
 
-
-#najwazniejsze dodać zabijanie przeciwnikow + kolizje z otoczeniem
-
+'''najwazniejsze dodać zabijanie przeciwnikow + kolizje z otoczeniem'''
 class Game(object):
     def redraw(self):
+        print("REDRAW")
         self.level.screen.fill(c.BLACK)
         self.draw()
         pygame.display.flip()
@@ -22,32 +21,11 @@ class Game(object):
         self.screen_width = c.SCREEN_WIDTH
         self.screen = pygame.display.get_surface()
         self.level = Level1(self, self.screen_width, self.screen_height)
+        self.game_state = c.START
 
         self.tps_clock = pygame.time.Clock()
         self.tps_delta = 0.0
-
-        counter = 0
-        while self.level.mario.alive() and self.level.game_info.time:
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit(0)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    sys.exit(0)
-
-            # Ticking
-            self.tps_delta += self.tps_clock.tick() / 1000.0
-            while self.tps_delta > 1 / self.tps_max:
-                counter += 1
-                print(counter)
-                if counter > 30:
-                    counter = 1
-                    self.level.game_info.time -= 1
-                self.tick()
-                self.tps_delta -= 1 / self.tps_max
-
-            # Drawing
-            self.redraw()
+        self.counter = 0
 
         if not self.level.mario.alive():
             input("Want to play one more time? Enter - yes, Escape - no")
@@ -59,21 +37,44 @@ class Game(object):
         elif pressed[pygame.K_ESCAPE]:
             sys.exit(0)
 
+    def update(self):
+        print("UPDATE")
+        if self.level.game_info.time:
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit(0)
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    sys.exit(0)
+
+            # Ticking
+            self.tps_delta += self.tps_clock.tick() / 1000.0
+            while self.tps_delta > 1 / self.tps_max:
+                self.counter += 1
+                print(self.counter)
+                if self.counter > 30:
+                    self.counter = 1
+                    self.level.game_info.time -= 1
+                self.tick()
+                self.tps_delta -= 1 / self.tps_max
+
+            # Drawing
+            self.redraw()
 
     def tick(self):
-        #self.level.mario.move()
+        print("TICK")
         self.level.move_mario()
         self.level.move_enemy()
         self.level.move_powrup()
         self.level.move_fireball()
         if(self.level.mario.state == c.STAND):
-           print("stand")
+            print("stand")
         elif(self.level.mario.state == c.WALK):
-           print("walk")
+            print("walk")
         elif(self.level.mario.state == c.JUMP):
-           print("jump")
+            print("jump")
         elif(self.level.mario.state == c.FALL):
-           print("fall")
+            print("fall")
 
     def draw(self):
         self.level.draw_background()

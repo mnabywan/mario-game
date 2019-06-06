@@ -10,7 +10,6 @@ class Mario(pygame.sprite.Sprite):
         self.game = game
         self.lives = 3
         self.fireball_group = fireball_group
-        # self.can_jump = True
         self.number_of_fireball = 0
 
         self.can_shoot = True
@@ -29,7 +28,7 @@ class Mario(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         self.coordinate_x = self.rect.x
-        self.coordinate_y = self.rect.y  # zawsze, wiec jest niepotrzebna
+        self.coordinate_y = self.rect.y
 
         self.key_timer = 0
 
@@ -70,7 +69,6 @@ class Mario(pygame.sprite.Sprite):
                     self.shooting()
                     self.last_shot = now
                     self.number_of_fireball += 1
-
 
         if pressed[pygame.K_RIGHT]:
             self.facing_right = True
@@ -221,15 +219,8 @@ class Mario(pygame.sprite.Sprite):
         elif pressed[pygame.K_RIGHT]:
             self.vel[0] += self.speed
 
-        # self.rect.x += self.vel[0]
-        # self.coordinate_x += self.vel[0]
         self.rect.y += self.vel[1]
 
-        # if pressed[pygame.K_LEFT]:
-        #   self.vel[0] -= self.speed
-
-        # elif pressed[pygame.K_RIGHT]:
-        #   self.vel[0] += self.speed
     def shooting(self):
         if self.fire:
             if self.facing_right:
@@ -256,7 +247,7 @@ class Mario(pygame.sprite.Sprite):
         self.mario_group.draw(self.game.level.screen)
 
     def load_images_from_sheet(self):
-        """To extract images from sheet and add them to properly lists"""
+        """Extracting images """
         self.right_small_frames = []
         self.left_small_frames = []
 
@@ -292,11 +283,9 @@ class Mario(pygame.sprite.Sprite):
         self.right_big_frames.append(
             self.get_image(144, 0, 16, 32))  # Right jump [4]
 
-
         for frame in self.right_big_frames:
             new_frame = pygame.transform.flip(frame, True, False)
             self.left_big_frames.append(new_frame)
-
 
         self.right_fire_frames.append(
             self.get_image(176, 48, 16, 32))  # Right standing [0]
@@ -317,7 +306,6 @@ class Mario(pygame.sprite.Sprite):
     def alive(self):
         if self.lives <= 0 or self.dead:
             return False
-
         else:
             return True
 
@@ -345,7 +333,7 @@ class Mario(pygame.sprite.Sprite):
         self.walking_timer = 0
 
     def setup_states(self):
-        'sets up states to affect to mario behaviour'
+        """sets up states to affect to mario behaviour"""
         self.facing_right = True
         self.is_big = False
         self.in_the_middle = False

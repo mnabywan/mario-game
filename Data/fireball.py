@@ -53,7 +53,6 @@ class Fireball(pygame.sprite.Sprite):
                 self.vel = [15, 13]
             elif self.direction == c.RIGHT and not self.go_down:
                 self.vel = [15, -13]
-
             elif self.direction == c.LEFT and self.go_down:
                 self.vel = [-15, 13]
             elif self.direction == c.LEFT and not self.go_down:

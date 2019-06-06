@@ -63,7 +63,6 @@ class Level1:
         self.bg = pygame.transform.scale(self.bg, (self.level_width, self.level_heigth))
         self.setup_background_elements()
 
-
     def draw_background(self):
         self.delta_x = -self.bg_pos[0]
         if self.mario.vel[0] and self.mario.in_the_middle and self.mario.coordinate_x < self.level_width - self.screen_width * 0.5:
@@ -96,7 +95,6 @@ class Level1:
         self.coin_group = pygame.sprite.Group()
         self.fireball_group = pygame.sprite.Group()
         self.castle_group = pygame.sprite.Group()
-
 
         for i in range(0, c.HEIGHT_ELEMENTS, 1):
             for j in range(0, c.WIDTH_ELEMENTS, 1):
@@ -192,13 +190,9 @@ class Level1:
         if self.mario.rect.x < powerup.rect.x or self.mario.rect.x + self.mario.rect.width < powerup.rect.x + powerup.rect.width:
             if not self.mario.is_big:
                 self.mario.small_to_big(powerup.rect.x, powerup.rect.bottom)
-                #self.check_mario_collisions_y()
-                #self.check_mario_collisions_x()
                 powerup.kill()
             elif self.mario.is_big:
                 self.mario.big_to_fire(powerup.rect.x, powerup.rect.bottom)
-                #self.check_mario_collisions_y()
-                #self.check_mario_collisions_x()
                 powerup.kill()
             elif self.mario.fire:
                 pass
@@ -249,9 +243,6 @@ class Level1:
             #self.mario.is_big = True
             self.mario.state = c.FALL
 
-
-
-
     def mario_brick_collisions_y(self, brick):
         if brick.rect.bottom > self.mario.rect.bottom:
             self.mario.vel[1] = 0
@@ -297,7 +288,6 @@ class Level1:
             else:
                 print("was bumped")
 
-
     def check_enemy_x_collisions(self, enemy):
         bg_elem = pygame.sprite.spritecollideany(enemy, self.bg_elem_group)
         #enemy_collider = pygame.sprite.spritecollideany(enemy, self.enemy_group)
@@ -312,8 +302,6 @@ class Level1:
                 enemy.direction = c.RIGHT
                 enemy.vel[0] = 2
                 #print("HALO2")
-
-
 
     def check_enemy_y_collisions(self, enemy):
         bg_elem = pygame.sprite.spritecollideany(enemy, self.bg_elem_group)
@@ -331,9 +319,6 @@ class Level1:
 
         elif not bg_elem and not box and not brick:
             pass
-            #print("NIE MA kolizji")
-            #powerup.rect.x += 2
-            #powerup.rect.y += 2
 
     def enemy_collisions_y(self, enemy, element):
         if element.rect.bottom > enemy.rect.bottom:
@@ -392,7 +377,6 @@ class Level1:
             self.check_fireball_y_collisions(fireball)
             fireball.rect.x += self.delta_x
             self.check_fireball_x_collisions(fireball)
-
 
         for enemy in self.enemy_group:
             self.check_enemy_x_collisions(enemy)
@@ -478,12 +462,9 @@ class Level1:
 
         elif brick:
             self.mushroom_collisions_y(powerup, brick)
-            #print("kol_brick")
 
         elif not bg_elem and not box and not brick:
-            print("NIE MA kolizji")
-            #powerup.rect.x += 2
-            #powerup.rect.y += 2
+            print("Brak kolizji")
 
     def mushroom_collisions_y(self, powerup ,element):
         if element.rect.bottom > powerup.rect.bottom:

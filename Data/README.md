@@ -1,7 +1,11 @@
 # Mario
 
+DESCRIPTION:
+
+Attempt to clone Mario for university programming course in Python.
+
 TODO:
 
--Game menu (starting screen)
+-game menu (starting screen) - done
 
--ending game
+-ending game - done
